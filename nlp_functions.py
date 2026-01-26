@@ -117,7 +117,7 @@ def generate_word_cloud(text, no, name=None):
                       stop_words='english'
                      )
     vec.fit_transform(tokens)
-    wc = pd.DataFrame({'words': vec.get_feature_names(),
+    wc = pd.DataFrame({'words': vec.get_feature_names_out(),
                        'tfidf': vec.idf_})
     words = ' '.join(wc.sort_values('tfidf', ascending=True)['words'].head(no))
     wordcloud = WordCloud(max_font_size=110,
