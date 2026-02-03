@@ -13,7 +13,7 @@
    "source": [
     "# AI-First Finance\n",
     "\n",
-    "**Deep Learning Basics**"
+    "**OLS Regression as the Benchmark**"
    ]
   },
   {
@@ -34,8 +34,8 @@
   },
   {
    "cell_type": "code",
-   "execution_count": null,
    "metadata": {},
+   "execution_count": null,
    "outputs": [],
    "source": [
     "!git clone https://github.com/tpq-classes/ai_in_finance.git\n",
@@ -49,74 +49,37 @@
    "metadata": {},
    "outputs": [],
    "source": [
+    "# !pip install cufflinks"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
     "import math\n",
+    "import eikon as ek\n",
     "import numpy as np\n",
     "import pandas as pd\n",
     "from pylab import plt\n",
-    "plt.style.use('seaborn-v0_8')"
+    "plt.style.use('seaborn-v0_8')\n",
+    "import cufflinks\n",
+    "cufflinks.set_config_file(offline=True)"
    ]
   },
   {
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "## Tensors"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "t = 10"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "t0 = np.array(10)\n",
-    "t0"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "t1 = np.array((2, 1))\n",
-    "t1"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "t2 = np.arange(10).reshape(5, 2)\n",
-    "t2"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "t3 = np.arange(16).reshape(2, 4, 2)\n",
-    "t3"
+    "## OLS Regression"
    ]
   },
   {
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "## Tensor Operations"
+    "### Simple Regression"
    ]
   },
   {
@@ -125,1544 +88,8 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "t2 + t2  # element-wise"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "t2 + 1  # broadcasting"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "t1"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "t2"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "np.dot(t2, t1)  # dot product ..."
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "t2[:, 0] * 2 + t2[:, 1] * 1  # ... written out"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "np.dot(t1, t2.T)  # the other way round"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "## Neural Networks"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "### Simple Neural Network"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "features = 2\n",
-    "samples = 5"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l0 = np.random.random((samples, features))\n",
-    "l0  # input layer (features)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w = np.random.random((features, 1))\n",
-    "w"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l2 = np.dot(l0, w)\n",
-    "l2  # output layer"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "### One Hidden Layer"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l0"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "units = 3"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w0 = np.random.random((features, units))\n",
-    "w0  # first tensor with (random) weights"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l1 = np.dot(l0, w0)\n",
-    "l1  # hidden layer"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w1 = np.random.random((units, 1))\n",
-    "w1  # second tensor with (random) weights"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l2 = np.dot(l1, w1)\n",
-    "l2  # output layer"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "## Learning &mdash; Simple Neural Network"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "### Estimation"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "#### Neural Network"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l0  # input layer (features)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w = np.random.random((features, 1))\n",
-    "w  # weights"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l2 = np.dot(l0, w)\n",
-    "l2  # output layer (predicted labels)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "y = l0[:, 0] * 0.5 + l0[:, 1]   # labels\n",
-    "y = y.reshape(-1, 1)\n",
-    "y"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "#### Errors"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "e = l2 - y\n",
-    "e"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "#### Loss Function"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "mse = (e ** 2).mean()\n",
-    "mse"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "#### Backward Propagation"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "d = e * 1\n",
-    "d"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "a = 0.01  # learning rate"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "u = a * np.dot(l0.T, d)\n",
-    "u"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w -= u"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l2 = np.dot(l0, w)\n",
-    "e = l2 - y"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "mse = (e ** 2).mean()\n",
-    "mse"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "#### Steps"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "steps = 400"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "a = 0.025"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w = np.random.random((features, 1))\n",
-    "w  # weights"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "for s in range(1, steps + 1):\n",
-    "    l2 = np.dot(l0, w)\n",
-    "    e = l2 - y\n",
-    "    u = a * np.dot(l0.T, e)\n",
-    "    w -= u\n",
-    "    mse = (e ** 2).mean()\n",
-    "    if s % 20 == 0: \n",
-    "        print(f'step={s:3d} | mse={mse:.5f}')"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l2"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "y"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l2 - y"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "### Classification"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "#### Activation "
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "def sigmoid(x, deriv=False):\n",
-    "    if deriv:\n",
-    "        return sigmoid(x) * (1 - sigmoid(x))\n",
-    "    return 1 / (1 + np.exp(-x))"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "x = np.linspace(-10, 10, 100)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "plt.figure(figsize=(10, 6))\n",
-    "plt.plot(x, np.where(x > 0, 1, 0), 'y--', label='step function')\n",
-    "plt.plot(x, sigmoid(x), 'r', label='sigmoid')\n",
-    "plt.plot(x, sigmoid(x, True), '--', label='derivative')\n",
-    "plt.legend();"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "#### Neural Network"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "features = 3\n",
-    "samples = 4"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "np.random.seed(1)\n",
-    "l0 = np.random.randint(0, 2, (samples, features))\n",
-    "l0  # input layer (features)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w = np.random.random((features, 1))\n",
-    "w  # weights"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l2 = sigmoid(np.dot(l0, w))\n",
-    "l2  # output layer (predicted labels)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l2.round()"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "y = np.random.randint(0, 2, samples)   # labels\n",
-    "y = y.reshape(-1, 1)\n",
-    "y"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "#### Errors"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "e = l2 - y \n",
-    "e"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "#### Loss Function"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "mse = (e ** 2).mean()\n",
-    "mse"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "#### Backward Propagation"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "a = 0.02  # learning rate"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "d = e * sigmoid(l2, True)\n",
-    "d"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "u = a * np.dot(l0.T, d)\n",
-    "u"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w -= u"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "#### Steps"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "steps = 2001"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "a = 0.02"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w = np.random.random((features, 1))\n",
-    "w  # weights"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "for s in range(1, steps + 1):\n",
-    "    l2 = sigmoid(np.dot(l0, w))\n",
-    "    e = l2 - y\n",
-    "    d = e * sigmoid(l2, True)\n",
-    "    u = a * np.dot(l0.T, d)\n",
-    "    w -= u\n",
-    "    mse = (e ** 2).mean()\n",
-    "    if s % 200 == 0:\n",
-    "        print(f'step={s:4d} | mse={mse:.4f}')"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l2"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l2.round()"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "y"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l2.round() == y"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "## Learning &mdash; One Hidden Layer"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "### Estimation"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "#### Neural Network "
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "features = 5\n",
-    "samples = 5"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l0 = np.random.random((samples, features))\n",
-    "l0  # input layer (features)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "np.linalg.matrix_rank(l0)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "units = 3"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w0 = np.random.random((features, units))\n",
-    "w0"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l1 = np.dot(l0, w0)\n",
-    "l1  # hidden layer"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w1 = np.random.random((units, 1))\n",
-    "w1"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l2 = np.dot(l1, w1)\n",
-    "l2"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "y = np.random.random((samples, 1))\n",
-    "y"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "#### Errors"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "e2 = l2 - y\n",
-    "e2"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "#### Loss Function"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "mse = (e2 ** 2).mean()\n",
-    "mse"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "#### Backward Propagation"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "d2 = e2 * 1\n",
-    "d2"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "a = 0.05  # learning rate"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "u2 = a * np.dot(l1.T, d2)\n",
-    "u2"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w1"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w1 -= u2"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w1"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "e1 = np.dot(d2, w1.T)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "d1 = e1 * 1"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "u1 = a * np.dot(l0.T, d1)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w0 -= u1"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "#### Steps"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "features = 5\n",
-    "samples = 4\n",
-    "units = 5"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l0 = np.random.random((samples, features))\n",
-    "w0 = np.random.random((features, units))  * 0.15\n",
-    "w1 = np.random.random((units, 1)) * 0.15\n",
-    "y = np.random.random((samples, 1))"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "a = 0.01\n",
-    "steps = 20000"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "for s in range(1, steps + 1):\n",
-    "    l1 = np.dot(l0, w0)\n",
-    "    l2 = np.dot(l1, w1)\n",
-    "    e2 = l2 - y\n",
-    "    u2 = a * np.dot(l1.T, e2)\n",
-    "    w1 -= u2\n",
-    "    e1 = np.dot(e2, w1.T)\n",
-    "    u1 = a * np.dot(l0.T, e1)\n",
-    "    w0 -= u1\n",
-    "    mse = (e2 ** 2).mean()\n",
-    "    if s % 2000 == 0: \n",
-    "        print(f'step={s:5d} | mse={mse:.5f}')"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l2"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "y"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "(l2 - y).round(5)"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "### Classification"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "#### Neural Network"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "features = 3\n",
-    "samples = 4"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "np.random.seed(1)\n",
-    "l0 = np.random.randint(0, 2, (samples, features))\n",
-    "l0  # input layer (features)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "np.linalg.matrix_rank(l0)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "units = 3"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w0 = np.random.random((features, units))\n",
-    "w0"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l1 = sigmoid(np.dot(l0, w0))\n",
-    "l1  # hidden layer"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w1 = np.random.random((units, 1))\n",
-    "w1"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l2 = sigmoid(np.dot(l1, w1))\n",
-    "l2"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "y = np.random.randint(0, 2, (samples, 1))\n",
-    "y"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "#### Errors"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "e2 = l2 - y \n",
-    "e2"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "#### Loss Function"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "mse = (e2 ** 2).mean()\n",
-    "mse"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "#### Backward Propagation"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "d2 = e2 * sigmoid(l2, True)\n",
-    "d2"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "a = 0.05  # learning rate"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "u2 = a * np.dot(l1.T, d2)\n",
-    "u2"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w1"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w1 -= u2"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w1"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "e1 = np.dot(d2, w1.T)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "d1 = e1 * sigmoid(l1, True)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "u1 = a * np.dot(l0.T, d1)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w0 -= u1"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "#### Steps"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "features = 5\n",
-    "samples = 10\n",
-    "units = 10"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "np.random.seed(200)\n",
-    "l0 = np.random.randint(0, 2, (samples, features))\n",
-    "w0 = np.random.random((features, units))\n",
-    "w1 = np.random.random((units, 1))\n",
-    "y = np.random.randint(0, 2, (samples, 1))"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "a = 0.1\n",
-    "steps = 20000"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "for s in range(1, steps + 1):\n",
-    "    l1 = sigmoid(np.dot(l0, w0))\n",
-    "    l2 = sigmoid(np.dot(l1, w1))\n",
-    "    e2 = l2 - y\n",
-    "    d2 = e2 * sigmoid(l2, True)\n",
-    "    u2 = a * np.dot(l1.T, d2)\n",
-    "    w1 -= u2\n",
-    "    e1 = np.dot(d2, w1.T)\n",
-    "    d1 = e1 * sigmoid(l1, True)\n",
-    "    u1 = a * np.dot(l0.T, d1)\n",
-    "    w0 -= u1\n",
-    "    mse = (e2 ** 2).mean()\n",
-    "    if s % 2000 == 0: \n",
-    "        print(f'step={s:5d} | mse={mse:.5f}')"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "acc = l2.round() == y\n",
-    "acc"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "sum(acc) / len(acc)"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "## Scikit-Learn MLP Classifier"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "import warnings\n",
-    "warnings.simplefilter('ignore')"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "from sklearn.neural_network import MLPClassifier\n",
-    "from sklearn.metrics import accuracy_score"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "model = MLPClassifier(hidden_layer_sizes=(2 * units), max_iter=250)"
-   ]
-  },
-  {
-   "cell_type": "raw",
-   "id": "14416c4b",
-   "metadata": {
-    "auto_refactor_original_cell_type": "code",
-    "auto_refactor_role": "raw_backup"
-   },
-   "source": [
-    "model.fit(l0, y)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "353b9aed",
-   "metadata": {
-    "auto_refactor_role": "generated"
-   },
-   "outputs": [],
-   "source": [
-    "model.fit(l0, y, verbose=0)"
-   ]
-  },
-  {
-   "cell_type": "raw",
-   "id": "70b00385",
-   "metadata": {
-    "auto_refactor_original_cell_type": "code",
-    "auto_refactor_role": "raw_backup"
-   },
-   "source": [
-    "l2 = model.predict(l0)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "923560f4",
-   "metadata": {
-    "auto_refactor_role": "generated"
-   },
-   "outputs": [],
-   "source": [
-    "l2 = model(tf.convert_to_tensor(l0, dtype=tf.float32), training=False).numpy()"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l2"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l2 == y.flatten()"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "accuracy_score(l2, y.flatten())"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "## Neural Networks with Keras"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "### Estimation"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "import numpy as np"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "x = np.linspace(0, 3 * np.pi, 50)\n",
-    "y = np.cos(x)"
+    "x = np.linspace(0, 5, 100)\n",
+    "y = 2 + 0.5 * x + np.random.standard_normal(len(x)) * 0.15"
    ]
   },
   {
@@ -1681,8 +108,7 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "import os\n",
-    "os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'"
+    "np.cov(x, y)"
    ]
   },
   {
@@ -1691,9 +117,7 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "import tensorflow as tf\n",
-    "from keras.layers import Dense\n",
-    "from keras.models import Sequential"
+    "cov = np.cov(x, y)[0, 1]"
    ]
   },
   {
@@ -1702,9 +126,7 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "model = Sequential()\n",
-    "model.add(Dense(4 * 48, input_dim=1, activation='relu'))\n",
-    "model.add(Dense(4 * 24, activation='relu'))"
+    "beta = cov / x.var()"
    ]
   },
   {
@@ -1713,9 +135,7 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "# estimation\n",
-    "model.add(Dense(1, activation='linear'))\n",
-    "model.compile(loss='mse', optimizer='adam', metrics=['mse', 'accuracy'])"
+    "alpha = y.mean() - beta * x.mean()"
    ]
   },
   {
@@ -1724,59 +144,7 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "model.summary()"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "%time model.fit(x, y, epochs=1000, verbose=False)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "scores = model.evaluate(x, y)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "print('mse: %.5f' % (scores[1]))"
-   ]
-  },
-  {
-   "cell_type": "raw",
-   "id": "a2360bb9",
-   "metadata": {
-    "auto_refactor_original_cell_type": "code",
-    "auto_refactor_role": "raw_backup"
-   },
-   "source": [
-    "# estimation\n",
-    "pred = model.predict(x)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "9f28fbc6",
-   "metadata": {
-    "auto_refactor_role": "generated"
-   },
-   "outputs": [],
-   "source": [
-    "# estimation\n",
-    "pred = model(tf.convert_to_tensor(x, dtype=tf.float32), training=False).numpy()"
+    "alpha, beta"
    ]
   },
   {
@@ -1786,8 +154,766 @@
    "outputs": [],
    "source": [
     "plt.figure(figsize=(10, 6))\n",
-    "plt.plot(x, y, 'ro', label='original data')\n",
-    "plt.plot(x, pred, label='prediction')\n",
+    "plt.plot(x, alpha + beta * x, lw=2.0)\n",
+    "plt.plot(x, y, 'ro');"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "r = alpha + beta * x - y"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Check for assumptions:\n",
+    "* **linearity**: given\n",
+    "* **independence**: given\n",
+    "* **zero mean**: mean zero given (see below)\n",
+    "* **no correlation**: correlation of zero (see below)\n",
+    "* **homoscedasticity**: given (see below)\n",
+    "* **no autocorrelation**: given (see below)\n",
+    "\n",
+    "See also [Linear Regression Assumptions](https://medium.com/datadriveninvestor/linear-regression-assumptions-f2252b8e2912) or [Ordinary Least Squares](https://en.wikipedia.org/wiki/Ordinary_least_squares)."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "r.mean()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "np.corrcoef(r, x)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from scipy.stats import bartlett"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "split = int(len(x) / 2)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "bartlett(r[:split], r[split:])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from statsmodels.stats.diagnostic import acorr_ljungbox\n",
+    "from statsmodels.graphics.tsaplots import plot_acf"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "fig, ax = plt.subplots(figsize=(10, 6))\n",
+    "plot_acf(r, ax=ax);"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Monomial Regression"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "x = np.linspace(0, 5, 100)\n",
+    "y = 2 - 0.5 * x ** 2 + 0.1 * x ** 3 + np.random.standard_normal(len(x)) * 0.15"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "plt.figure(figsize=(10, 6))\n",
+    "plt.plot(x, y, 'ro');"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "reg = np.polyfit(x, y, deg=3)\n",
+    "reg"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "plt.figure(figsize=(10, 6))\n",
+    "plt.plot(x, np.polyval(reg, x), lw=2.0)\n",
+    "plt.plot(x, y, 'ro');"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "r = np.polyval(reg, x) - y"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Check for assumptions:\n",
+    "* **linearity**: given\n",
+    "* **independence**: given\n",
+    "* **zero mean**: given\n",
+    "* **no correlation**: given\n",
+    "* **homoscedasticity**: given\n",
+    "* **no autocorrelation**: given"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "r.mean()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "np.corrcoef(r, x)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "split = int(len(x) / 2)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "bartlett(r[:split], r[split:])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "fig, ax = plt.subplots(figsize=(10, 6))\n",
+    "plot_acf(r, ax=ax);"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Multivariate Regression"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "x1 = np.random.random(200) * 5\n",
+    "x2 = np.random.random(200) * 5\n",
+    "y = 2 - 0.5 * x1 ** 2 + 0.1 * x2 ** 3 + np.random.standard_normal(len(x1)) * 0.15"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df = pd.DataFrame({'x1': x1, 'x2': x2, 'y': y, 'text': '', 'categories': ''})"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df.iplot(kind='scatter3d', x='x1', y='x2', z='y',\n",
+    "         text='text', categories='categories', size=4)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "B = np.array((x1, x2)).T"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "B[:5]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "reg = np.linalg.lstsq(B, y, rcond=-1)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "reg\n",
+    "# 1 optimal regression parameters\n",
+    "# 2 squared Euclidean norm for residuals\n",
+    "# 3 rank of the matrix\n",
+    "# 4 singular values of matrix"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "y_ = np.dot(B, reg[0])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "r = y_ - y"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df['r'] = r"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Check for assumptions:\n",
+    "* **linearity**: given\n",
+    "* **independence**: given (see corr x1 & x2)\n",
+    "* **zero mean**: non-zero mean\n",
+    "* **no correlation**: not given\n",
+    "* **homoscedasticity**: given\n",
+    "* **no autocorrelation**: given"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df.corr(numeric_only=True)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "r.mean()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "split = int(len(x) / 2)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# help(bartlett)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "bartlett(r[:split], r[split:])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "fig, ax = plt.subplots(figsize=(10, 6))\n",
+    "plot_acf(r, ax=ax);"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Fast and Scalable"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "%%time\n",
+    "N = 10000000\n",
+    "x1 = np.random.random(N) * 5\n",
+    "x2 = np.random.random(N) * 5\n",
+    "x3 = np.random.random(N) * 5\n",
+    "B = np.array((x1, x2, x3)).T\n",
+    "y = 2 + 5 * x1 - 0.5 * x2 ** 2 + 0.1 * x3 ** 3 + np.random.standard_normal(len(x1)) * 0.15"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "x1.nbytes * 4 / 1e6  # MB"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "scrolled": true
+   },
+   "outputs": [],
+   "source": [
+    "%time np.linalg.lstsq(B, y, rcond=-1)[0]"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Linear Regression with Scikit-Learn"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from sklearn.linear_model import LinearRegression\n",
+    "from sklearn.metrics import r2_score"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "x = np.linspace(0, 5, 50)\n",
+    "y = 2 - 0.5 * x ** 2 + 0.1 * x ** 3 + np.random.standard_normal(len(x)) * 0.1"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "model = LinearRegression()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "model.fit(np.atleast_2d(x).T, y)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "pred = model.predict(np.atleast_2d(x).T)\n",
+    "pred[:5]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "plt.figure(figsize=(10, 6))\n",
+    "plt.plot(x, pred)\n",
+    "plt.plot(x, y, 'ro');"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "r2_score(y, [y.mean()] * len(y))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "r2_score(y, pred)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Monomial Regression with Scikit-Learn"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "See VanderPlas: Python Data Science Handbook (O'Reilly)."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from sklearn.preprocessing import PolynomialFeatures\n",
+    "from sklearn.pipeline import make_pipeline"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def PolynomialRegression(degree=2, **kwargs):\n",
+    "    return make_pipeline(PolynomialFeatures(degree), LinearRegression(**kwargs))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "x = np.atleast_2d(x).T"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "x_ = np.atleast_2d(np.linspace(x.min(), x.max(), 50)).T"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "res = {}\n",
+    "for deg in [1, 3, 5]:\n",
+    "    model = PolynomialRegression(deg)\n",
+    "    model.fit(x, y)\n",
+    "    res[deg] = model.predict(x_)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "plt.figure(figsize=(10, 6))\n",
+    "for key in res:\n",
+    "    plt.plot(x_, res[key], label=f'degree={key}')\n",
+    "plt.plot(x, y, 'ro')\n",
+    "plt.legend();"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "for deg in [1, 2, 3, 4, 5]:\n",
+    "    y_ = PolynomialRegression(deg).fit(x.reshape(-1, 1), y).predict(x.reshape(-1, 1))\n",
+    "    R2 = r2_score(y, y_)\n",
+    "    print(f'degree={deg} | R2={R2}')"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Model Validation"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Simple Split"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "split = int(len(x) * 0.6)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "model = PolynomialRegression(2)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "model.fit(x[:split], y[:split])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "pred = model.predict(x)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "plt.figure(figsize=(10, 6))\n",
+    "plt.plot(x[:split], pred[:split], 'b--')\n",
+    "plt.plot(x[split:], pred[split:], 'y--')\n",
+    "plt.plot(x, y, 'ro');"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Random Split"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "i = np.arange(len(x))\n",
+    "np.random.shuffle(i)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "model.fit(x[i[:split]], y[i[:split]])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "pred = model.predict(x)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "plt.figure(figsize=(10, 6))\n",
+    "plt.plot(x[:split], pred[:split], 'b--')\n",
+    "plt.plot(x[split:], pred[split:], 'y--')\n",
+    "plt.plot(x, y, 'ro');"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Validation Curves"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from sklearn.model_selection import validation_curve"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "degrees = np.arange(1, 6)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# validation_curve?"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "train_score, val_score = validation_curve(PolynomialRegression(), X=x, y=y,\n",
+    "                                         param_name='polynomialfeatures__degree',\n",
+    "                                         param_range=degrees, cv=5)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "plt.figure(figsize=(10, 6))\n",
+    "plt.plot(degrees, np.median(train_score, axis=1), label='training score')\n",
+    "plt.plot(degrees, np.median(val_score, axis=1), label='validation score')\n",
     "plt.legend();"
    ]
   },
@@ -1795,7 +921,41 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "### Binary Classification"
+    "## Random Walks"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Eugene F. Fama (1965): “Random Walks in Stock Market Prices”:\n",
+    "\n",
+    "> “For many years, economists, statisticians, and teachers of finance have been interested in developing and testing models of stock price behavior. One important model that has evolved from this research is the theory of random walks. This theory casts serious doubt on many other methods for describing and predicting stock price behavior—methods that have considerable popularity outside the academic world. For example, we shall see later that, if the random-walk theory is an accurate description of reality, then the various “technical” or “chartist” procedures for predicting stock prices are completely without value.”"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Michael Jensen (1978): “Some Anomalous Evidence Regarding Market Efficiency”:\n",
+    "\n",
+    ">“A market is efficient with respect to an information set S if it is impossible to make economic profits by trading on the basis of information set S.”"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "If a stock price follows a (simple) random walk (no drift & normally distributed returns), then it rises and falls with the same probability of 50% (“toss of a coin”).\n",
+    "\n",
+    "**In such a case, the best predictor of tomorrow’s stock price — in a least-squares sense — is today’s stock price.**"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Retrieving Cross-Asset Data"
    ]
   },
   {
@@ -1804,7 +964,7 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "yc = np.where(y > 0, 1, 0)"
+    "url = 'http://hilpisch.com/tr_eikon_eod_data.csv'"
    ]
   },
   {
@@ -1813,9 +973,7 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "plt.figure(figsize=(10, 6))\n",
-    "plt.plot(x, y, 'm^')\n",
-    "plt.plot(x, yc, 'ro');"
+    "data = pd.read_csv(url, index_col=0, parse_dates=True).dropna()"
    ]
   },
   {
@@ -1824,9 +982,7 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "model = Sequential()\n",
-    "model.add(Dense(48, input_dim=1, activation='relu'))\n",
-    "model.add(Dense(24, activation='relu'))"
+    "data.head()"
    ]
   },
   {
@@ -1835,10 +991,14 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "# classification\n",
-    "model.add(Dense(1, activation='sigmoid'))\n",
-    "model.compile(loss='binary_crossentropy', optimizer='adam',\n",
-    "              metrics=['accuracy'])"
+    "data.info()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Calculating the Log Returns"
    ]
   },
   {
@@ -1847,7 +1007,7 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "model.summary()"
+    "rets = np.log(data / data.shift(1))"
    ]
   },
   {
@@ -1856,7 +1016,14 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "%time model.fit(x, yc, epochs=1500, verbose=False)"
+    "rets.head()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Plotting the Data"
    ]
   },
   {
@@ -1865,7 +1032,7 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "scores = model.evaluate(x, yc)"
+    "data.normalize().iplot(kind='lines')"
    ]
   },
   {
@@ -1874,32 +1041,7 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "print('accuracy: %.2f%%' % (scores[1] * 100))"
-   ]
-  },
-  {
-   "cell_type": "raw",
-   "id": "502786de",
-   "metadata": {
-    "auto_refactor_original_cell_type": "code",
-    "auto_refactor_role": "raw_backup"
-   },
-   "source": [
-    "# classification\n",
-    "pred = np.where(model.predict(x) > 0.5, 1, 0)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "411ee951",
-   "metadata": {
-    "auto_refactor_role": "generated"
-   },
-   "outputs": [],
-   "source": [
-    "# classification\n",
-    "pred = np.where(model(tf.convert_to_tensor(x, dtype=tf.float32), training=False).numpy() > 0.5, 1, 0)"
+    "rets.iplot(kind='histogram', subplots=True)"
    ]
   },
   {
@@ -1908,10 +1050,465 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "plt.figure(figsize=(10, 6))\n",
-    "plt.plot(x, yc, 'ro', label='original data')\n",
-    "plt.plot(x, pred, label='prediction')\n",
-    "plt.legend();"
+    "rets.corr().iplot(kind='heatmap', colorscale='blues')"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Preparing Lagged Data"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def add_lags(data, ric, lags):\n",
+    "    cols = []\n",
+    "    df = pd.DataFrame(data[ric])\n",
+    "    for lag in range(1, lags + 1):\n",
+    "        col = 'lag_{}'.format(lag)  # defines the column name\n",
+    "        df[col] = df[ric].shift(lag)  # creates the lagged data column\n",
+    "        cols.append(col)  # stores the column name\n",
+    "    df.dropna(inplace=True)  # gets rid of incomplete data rows\n",
+    "    return df, cols"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "lags = 7  # seven historical lags"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "dfs = {}\n",
+    "for sym in data.columns:\n",
+    "    df, cols = add_lags(data, sym, lags)\n",
+    "    dfs[sym] = df"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "cols  # the column names for the lags"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "dfs.keys()  # the keys of the dictonary"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "dfs['AAPL.O'].head(7)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Implementing OLS Regression"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "regs = {}\n",
+    "for sym in data.columns:\n",
+    "    df = dfs[sym]  # getting data for the RIC\n",
+    "    reg = np.linalg.lstsq(df[cols], df[sym], rcond=-1)[0]  # the OLS regression\n",
+    "    regs[sym] = reg  # storing the results"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "for sym in data.columns:\n",
+    "    print('{:10} | {}'.format(sym, regs[sym].round(4)))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "rega = np.stack(list(regs.values()))  # combines the regression results"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "rega.mean(axis=0)  # mean values by column"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "regd = pd.DataFrame(rega, columns=cols, index=data.columns)  # converting the results to DataFrame"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "regd"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "regd.iplot(kind='bar')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "regd.mean().iplot(kind='bar')"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Cross Check"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "sym = 'AAPL.O'"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "reg = regd.loc[sym].values"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "y_ = np.dot(dfs[sym][cols], reg)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "r = y_ - dfs[sym][sym]"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Check for assumptions:\n",
+    "* **linearity**: given\n",
+    "* **independence**: <b style=\"color: red;\">not at all</b>\n",
+    "* **zero mean**: somehow\n",
+    "* **no correlation**: given\n",
+    "* **homoscedasticity**: **not given**\n",
+    "* **no autocorrelation**: given\n",
+    "* **stationarity**: **not given**"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "dfs[sym][cols].corr()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "r.mean()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "split = int(len(x) / 2)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "np.corrcoef(r, dfs[sym]['lag_3'])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "bartlett(r[:split], r[split:])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "fig, ax = plt.subplots(figsize=(10, 6))\n",
+    "plot_acf(r, ax=ax);"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from statsmodels.tsa.stattools import adfuller"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "adfuller(dfs[sym][sym])"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## A Gleam of Hope?"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Multi Layer Perceptron"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from sklearn.neural_network import MLPClassifier\n",
+    "from sklearn.metrics import accuracy_score"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "model = MLPClassifier(hidden_layer_sizes=(250, 250), max_iter=100)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "sym = 'AAPL.O'"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Return Patterns"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "rets = np.log(dfs[sym] / dfs[sym].shift(1)).dropna()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "adfuller(rets[sym])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "rets['d'] = np.sign(rets[sym])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# rets[cols] = np.sign(rets[cols])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# rets[cols] -= rets[cols].mean()\n",
+    "# rets[cols] /= rets[cols].std()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "rets.head()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Model Fitting & Prediction"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "model = model.fit(rets[cols], rets['d'])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "rets['p'] = model.predict(rets[cols])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "accuracy_score(rets['d'], rets['p'])"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Vectorized Backtesting"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "(rets['p'].diff() != 0).sum()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "rets['strategy'] = rets['p'] * rets[sym]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "rets[[sym, 'strategy']].cumsum().apply(np.exp).iplot()"
    ]
   },
   {
@@ -1924,8 +1521,8 @@
  ],
  "metadata": {
   "kernelspec": {
-   "display_name": "Python 3",
-   "name": "python3"
+   "name": "python3",
+   "display_name": "Python 3"
   },
   "language_info": {
    "codemirror_mode": {

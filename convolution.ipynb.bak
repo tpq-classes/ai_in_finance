@@ -34,8 +34,8 @@
   },
   {
    "cell_type": "code",
-   "execution_count": null,
    "metadata": {},
+   "execution_count": null,
    "outputs": [],
    "source": [
     "!git clone https://github.com/tpq-classes/ai_in_finance.git\n",
@@ -452,12 +452,10 @@
    ]
   },
   {
-   "cell_type": "raw",
-   "id": "1aa2cad5",
-   "metadata": {
-    "auto_refactor_original_cell_type": "code",
-    "auto_refactor_role": "raw_backup"
-   },
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
    "source": [
     "model.predict(g)"
    ]
@@ -465,36 +463,10 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "id": "67f2cf1a",
-   "metadata": {
-    "auto_refactor_role": "generated"
-   },
+   "metadata": {},
    "outputs": [],
-   "source": [
-    "model(tf.convert_to_tensor(g, dtype=tf.float32), training=False).numpy()"
-   ]
-  },
-  {
-   "cell_type": "raw",
-   "id": "fb10f489",
-   "metadata": {
-    "auto_refactor_original_cell_type": "code",
-    "auto_refactor_role": "raw_backup"
-   },
    "source": [
     "model.predict(g).round()"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "28a86f0d",
-   "metadata": {
-    "auto_refactor_role": "generated"
-   },
-   "outputs": [],
-   "source": [
-    "model(tf.convert_to_tensor(g, dtype=tf.float32), training=False).numpy().round()"
    ]
   },
   {
@@ -568,31 +540,13 @@
    ]
   },
   {
-   "cell_type": "raw",
-   "id": "c309261a",
-   "metadata": {
-    "auto_refactor_original_cell_type": "code",
-    "auto_refactor_role": "raw_backup"
-   },
-   "source": [
-    "%%time\n",
-    "model.fit(np.atleast_3d(train[cols]), train['d'],\n",
-    "          epochs=15, batch_size=48, verbose=False,\n",
-    "          validation_data=(np.atleast_3d(val[cols]), val['d']),\n",
-    "          callbacks=callbacks);"
-   ]
-  },
-  {
    "cell_type": "code",
    "execution_count": null,
-   "id": "ab2a227a",
-   "metadata": {
-    "auto_refactor_role": "generated"
-   },
+   "metadata": {},
    "outputs": [],
    "source": [
     "%%time\n",
-    "model.fit(np.atleast_3d(train[cols], verbose=0), train['d'],\n",
+    "model.fit(np.atleast_3d(train[cols]), train['d'],\n",
     "          epochs=15, batch_size=48, verbose=False,\n",
     "          validation_data=(np.atleast_3d(val[cols]), val['d']),\n",
     "          callbacks=callbacks);"
@@ -654,27 +608,12 @@
    ]
   },
   {
-   "cell_type": "raw",
-   "id": "2759d7ca",
-   "metadata": {
-    "auto_refactor_original_cell_type": "code",
-    "auto_refactor_role": "raw_backup"
-   },
-   "source": [
-    "test['p'] = np.where(model.predict(np.atleast_3d(test[cols])) > 0.5, 1, 0)\n",
-    "test['p'] = np.where(test['p'] > 0, 1, -1)"
-   ]
-  },
-  {
    "cell_type": "code",
    "execution_count": null,
-   "id": "84f02f9c",
-   "metadata": {
-    "auto_refactor_role": "generated"
-   },
+   "metadata": {},
    "outputs": [],
    "source": [
-    "test['p'] = np.where(model(tf.convert_to_tensor(np.atleast_3d(test[cols], dtype=tf.float32), training=False).numpy()) > 0.5, 1, 0)\n",
+    "test['p'] = np.where(model.predict(np.atleast_3d(test[cols])) > 0.5, 1, 0)\n",
     "test['p'] = np.where(test['p'] > 0, 1, -1)"
    ]
   },
@@ -796,8 +735,8 @@
  ],
  "metadata": {
   "kernelspec": {
-   "display_name": "Python 3",
-   "name": "python3"
+   "name": "python3",
+   "display_name": "Python 3"
   },
   "language_info": {
    "codemirror_mode": {

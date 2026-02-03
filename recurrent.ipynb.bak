@@ -13,7 +13,7 @@
    "source": [
     "# AI-First Finance\n",
     "\n",
-    "**Deep Learning Basics**"
+    "**Recurrent Neural Networks**"
    ]
   },
   {
@@ -34,8 +34,8 @@
   },
   {
    "cell_type": "code",
-   "execution_count": null,
    "metadata": {},
+   "execution_count": null,
    "outputs": [],
    "source": [
     "!git clone https://github.com/tpq-classes/ai_in_finance.git\n",
@@ -57,1622 +57,13 @@
    ]
   },
   {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "## Tensors"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "t = 10"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "t0 = np.array(10)\n",
-    "t0"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "t1 = np.array((2, 1))\n",
-    "t1"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "t2 = np.arange(10).reshape(5, 2)\n",
-    "t2"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "t3 = np.arange(16).reshape(2, 4, 2)\n",
-    "t3"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "## Tensor Operations"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "t2 + t2  # element-wise"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "t2 + 1  # broadcasting"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "t1"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "t2"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "np.dot(t2, t1)  # dot product ..."
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "t2[:, 0] * 2 + t2[:, 1] * 1  # ... written out"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "np.dot(t1, t2.T)  # the other way round"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "## Neural Networks"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "### Simple Neural Network"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "features = 2\n",
-    "samples = 5"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l0 = np.random.random((samples, features))\n",
-    "l0  # input layer (features)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w = np.random.random((features, 1))\n",
-    "w"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l2 = np.dot(l0, w)\n",
-    "l2  # output layer"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "### One Hidden Layer"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l0"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "units = 3"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w0 = np.random.random((features, units))\n",
-    "w0  # first tensor with (random) weights"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l1 = np.dot(l0, w0)\n",
-    "l1  # hidden layer"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w1 = np.random.random((units, 1))\n",
-    "w1  # second tensor with (random) weights"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l2 = np.dot(l1, w1)\n",
-    "l2  # output layer"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "## Learning &mdash; Simple Neural Network"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "### Estimation"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "#### Neural Network"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l0  # input layer (features)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w = np.random.random((features, 1))\n",
-    "w  # weights"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l2 = np.dot(l0, w)\n",
-    "l2  # output layer (predicted labels)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "y = l0[:, 0] * 0.5 + l0[:, 1]   # labels\n",
-    "y = y.reshape(-1, 1)\n",
-    "y"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "#### Errors"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "e = l2 - y\n",
-    "e"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "#### Loss Function"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "mse = (e ** 2).mean()\n",
-    "mse"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "#### Backward Propagation"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "d = e * 1\n",
-    "d"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "a = 0.01  # learning rate"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "u = a * np.dot(l0.T, d)\n",
-    "u"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w -= u"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l2 = np.dot(l0, w)\n",
-    "e = l2 - y"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "mse = (e ** 2).mean()\n",
-    "mse"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "#### Steps"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "steps = 400"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "a = 0.025"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w = np.random.random((features, 1))\n",
-    "w  # weights"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "for s in range(1, steps + 1):\n",
-    "    l2 = np.dot(l0, w)\n",
-    "    e = l2 - y\n",
-    "    u = a * np.dot(l0.T, e)\n",
-    "    w -= u\n",
-    "    mse = (e ** 2).mean()\n",
-    "    if s % 20 == 0: \n",
-    "        print(f'step={s:3d} | mse={mse:.5f}')"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l2"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "y"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l2 - y"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "### Classification"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "#### Activation "
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "def sigmoid(x, deriv=False):\n",
-    "    if deriv:\n",
-    "        return sigmoid(x) * (1 - sigmoid(x))\n",
-    "    return 1 / (1 + np.exp(-x))"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "x = np.linspace(-10, 10, 100)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "plt.figure(figsize=(10, 6))\n",
-    "plt.plot(x, np.where(x > 0, 1, 0), 'y--', label='step function')\n",
-    "plt.plot(x, sigmoid(x), 'r', label='sigmoid')\n",
-    "plt.plot(x, sigmoid(x, True), '--', label='derivative')\n",
-    "plt.legend();"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "#### Neural Network"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "features = 3\n",
-    "samples = 4"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "np.random.seed(1)\n",
-    "l0 = np.random.randint(0, 2, (samples, features))\n",
-    "l0  # input layer (features)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w = np.random.random((features, 1))\n",
-    "w  # weights"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l2 = sigmoid(np.dot(l0, w))\n",
-    "l2  # output layer (predicted labels)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l2.round()"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "y = np.random.randint(0, 2, samples)   # labels\n",
-    "y = y.reshape(-1, 1)\n",
-    "y"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "#### Errors"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "e = l2 - y \n",
-    "e"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "#### Loss Function"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "mse = (e ** 2).mean()\n",
-    "mse"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "#### Backward Propagation"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "a = 0.02  # learning rate"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "d = e * sigmoid(l2, True)\n",
-    "d"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "u = a * np.dot(l0.T, d)\n",
-    "u"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w -= u"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "#### Steps"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "steps = 2001"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "a = 0.02"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w = np.random.random((features, 1))\n",
-    "w  # weights"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "for s in range(1, steps + 1):\n",
-    "    l2 = sigmoid(np.dot(l0, w))\n",
-    "    e = l2 - y\n",
-    "    d = e * sigmoid(l2, True)\n",
-    "    u = a * np.dot(l0.T, d)\n",
-    "    w -= u\n",
-    "    mse = (e ** 2).mean()\n",
-    "    if s % 200 == 0:\n",
-    "        print(f'step={s:4d} | mse={mse:.4f}')"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l2"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l2.round()"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "y"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l2.round() == y"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "## Learning &mdash; One Hidden Layer"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "### Estimation"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "#### Neural Network "
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "features = 5\n",
-    "samples = 5"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l0 = np.random.random((samples, features))\n",
-    "l0  # input layer (features)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "np.linalg.matrix_rank(l0)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "units = 3"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w0 = np.random.random((features, units))\n",
-    "w0"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l1 = np.dot(l0, w0)\n",
-    "l1  # hidden layer"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w1 = np.random.random((units, 1))\n",
-    "w1"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l2 = np.dot(l1, w1)\n",
-    "l2"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "y = np.random.random((samples, 1))\n",
-    "y"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "#### Errors"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "e2 = l2 - y\n",
-    "e2"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "#### Loss Function"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "mse = (e2 ** 2).mean()\n",
-    "mse"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "#### Backward Propagation"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "d2 = e2 * 1\n",
-    "d2"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "a = 0.05  # learning rate"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "u2 = a * np.dot(l1.T, d2)\n",
-    "u2"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w1"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w1 -= u2"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w1"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "e1 = np.dot(d2, w1.T)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "d1 = e1 * 1"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "u1 = a * np.dot(l0.T, d1)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w0 -= u1"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "#### Steps"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "features = 5\n",
-    "samples = 4\n",
-    "units = 5"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l0 = np.random.random((samples, features))\n",
-    "w0 = np.random.random((features, units))  * 0.15\n",
-    "w1 = np.random.random((units, 1)) * 0.15\n",
-    "y = np.random.random((samples, 1))"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "a = 0.01\n",
-    "steps = 20000"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "for s in range(1, steps + 1):\n",
-    "    l1 = np.dot(l0, w0)\n",
-    "    l2 = np.dot(l1, w1)\n",
-    "    e2 = l2 - y\n",
-    "    u2 = a * np.dot(l1.T, e2)\n",
-    "    w1 -= u2\n",
-    "    e1 = np.dot(e2, w1.T)\n",
-    "    u1 = a * np.dot(l0.T, e1)\n",
-    "    w0 -= u1\n",
-    "    mse = (e2 ** 2).mean()\n",
-    "    if s % 2000 == 0: \n",
-    "        print(f'step={s:5d} | mse={mse:.5f}')"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l2"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "y"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "(l2 - y).round(5)"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "### Classification"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "#### Neural Network"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "features = 3\n",
-    "samples = 4"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "np.random.seed(1)\n",
-    "l0 = np.random.randint(0, 2, (samples, features))\n",
-    "l0  # input layer (features)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "np.linalg.matrix_rank(l0)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "units = 3"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w0 = np.random.random((features, units))\n",
-    "w0"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l1 = sigmoid(np.dot(l0, w0))\n",
-    "l1  # hidden layer"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w1 = np.random.random((units, 1))\n",
-    "w1"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l2 = sigmoid(np.dot(l1, w1))\n",
-    "l2"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "y = np.random.randint(0, 2, (samples, 1))\n",
-    "y"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "#### Errors"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "e2 = l2 - y \n",
-    "e2"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "#### Loss Function"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "mse = (e2 ** 2).mean()\n",
-    "mse"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "#### Backward Propagation"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "d2 = e2 * sigmoid(l2, True)\n",
-    "d2"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "a = 0.05  # learning rate"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "u2 = a * np.dot(l1.T, d2)\n",
-    "u2"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w1"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w1 -= u2"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w1"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "e1 = np.dot(d2, w1.T)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "d1 = e1 * sigmoid(l1, True)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "u1 = a * np.dot(l0.T, d1)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "w0 -= u1"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "#### Steps"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "features = 5\n",
-    "samples = 10\n",
-    "units = 10"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "np.random.seed(200)\n",
-    "l0 = np.random.randint(0, 2, (samples, features))\n",
-    "w0 = np.random.random((features, units))\n",
-    "w1 = np.random.random((units, 1))\n",
-    "y = np.random.randint(0, 2, (samples, 1))"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "a = 0.1\n",
-    "steps = 20000"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "for s in range(1, steps + 1):\n",
-    "    l1 = sigmoid(np.dot(l0, w0))\n",
-    "    l2 = sigmoid(np.dot(l1, w1))\n",
-    "    e2 = l2 - y\n",
-    "    d2 = e2 * sigmoid(l2, True)\n",
-    "    u2 = a * np.dot(l1.T, d2)\n",
-    "    w1 -= u2\n",
-    "    e1 = np.dot(d2, w1.T)\n",
-    "    d1 = e1 * sigmoid(l1, True)\n",
-    "    u1 = a * np.dot(l0.T, d1)\n",
-    "    w0 -= u1\n",
-    "    mse = (e2 ** 2).mean()\n",
-    "    if s % 2000 == 0: \n",
-    "        print(f'step={s:5d} | mse={mse:.5f}')"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "acc = l2.round() == y\n",
-    "acc"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "sum(acc) / len(acc)"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "## Scikit-Learn MLP Classifier"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "import warnings\n",
-    "warnings.simplefilter('ignore')"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "from sklearn.neural_network import MLPClassifier\n",
-    "from sklearn.metrics import accuracy_score"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "model = MLPClassifier(hidden_layer_sizes=(2 * units), max_iter=250)"
-   ]
-  },
-  {
-   "cell_type": "raw",
-   "id": "14416c4b",
-   "metadata": {
-    "auto_refactor_original_cell_type": "code",
-    "auto_refactor_role": "raw_backup"
-   },
-   "source": [
-    "model.fit(l0, y)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "353b9aed",
-   "metadata": {
-    "auto_refactor_role": "generated"
-   },
-   "outputs": [],
-   "source": [
-    "model.fit(l0, y, verbose=0)"
-   ]
-  },
-  {
-   "cell_type": "raw",
-   "id": "70b00385",
-   "metadata": {
-    "auto_refactor_original_cell_type": "code",
-    "auto_refactor_role": "raw_backup"
-   },
-   "source": [
-    "l2 = model.predict(l0)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "923560f4",
-   "metadata": {
-    "auto_refactor_role": "generated"
-   },
-   "outputs": [],
-   "source": [
-    "l2 = model(tf.convert_to_tensor(l0, dtype=tf.float32), training=False).numpy()"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l2"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "l2 == y.flatten()"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "accuracy_score(l2, y.flatten())"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "## Neural Networks with Keras"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "### Estimation"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "import numpy as np"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "x = np.linspace(0, 3 * np.pi, 50)\n",
-    "y = np.cos(x)"
-   ]
-  },
-  {
    "cell_type": "code",
    "execution_count": null,
    "metadata": {},
    "outputs": [],
    "source": [
-    "plt.figure(figsize=(10, 6))\n",
-    "plt.plot(x, y, 'ro');"
+    "import cufflinks as cf\n",
+    "cf.set_config_file(offline=True)"
    ]
   },
   {
@@ -1691,111 +82,16 @@
    "metadata": {},
    "outputs": [],
    "source": [
+    "np.random.seed(100)\n",
     "import tensorflow as tf\n",
-    "from keras.layers import Dense\n",
-    "from keras.models import Sequential"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "model = Sequential()\n",
-    "model.add(Dense(4 * 48, input_dim=1, activation='relu'))\n",
-    "model.add(Dense(4 * 24, activation='relu'))"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "# estimation\n",
-    "model.add(Dense(1, activation='linear'))\n",
-    "model.compile(loss='mse', optimizer='adam', metrics=['mse', 'accuracy'])"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "model.summary()"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "%time model.fit(x, y, epochs=1000, verbose=False)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "scores = model.evaluate(x, y)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "print('mse: %.5f' % (scores[1]))"
-   ]
-  },
-  {
-   "cell_type": "raw",
-   "id": "a2360bb9",
-   "metadata": {
-    "auto_refactor_original_cell_type": "code",
-    "auto_refactor_role": "raw_backup"
-   },
-   "source": [
-    "# estimation\n",
-    "pred = model.predict(x)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "9f28fbc6",
-   "metadata": {
-    "auto_refactor_role": "generated"
-   },
-   "outputs": [],
-   "source": [
-    "# estimation\n",
-    "pred = model(tf.convert_to_tensor(x, dtype=tf.float32), training=False).numpy()"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "plt.figure(figsize=(10, 6))\n",
-    "plt.plot(x, y, 'ro', label='original data')\n",
-    "plt.plot(x, pred, label='prediction')\n",
-    "plt.legend();"
+    "tf.random.set_seed(100)"
    ]
   },
   {
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "### Binary Classification"
+    "## First Example"
    ]
   },
   {
@@ -1804,7 +100,8 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "yc = np.where(y > 0, 1, 0)"
+    "a = np.arange(100)\n",
+    "a"
    ]
   },
   {
@@ -1813,9 +110,73 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "plt.figure(figsize=(10, 6))\n",
-    "plt.plot(x, y, 'm^')\n",
-    "plt.plot(x, yc, 'ro');"
+    "a = a.reshape((len(a), -1))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "a.shape"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "a[:5]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from tensorflow.keras.preprocessing.sequence import TimeseriesGenerator"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "lags = 3"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "g = TimeseriesGenerator(a, a, length=lags, batch_size=5)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import os\n",
+    "os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from tensorflow import keras\n",
+    "from keras.models import Sequential\n",
+    "from keras.layers import SimpleRNN, LSTM, Dense"
    ]
   },
   {
@@ -1825,20 +186,9 @@
    "outputs": [],
    "source": [
     "model = Sequential()\n",
-    "model.add(Dense(48, input_dim=1, activation='relu'))\n",
-    "model.add(Dense(24, activation='relu'))"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "# classification\n",
-    "model.add(Dense(1, activation='sigmoid'))\n",
-    "model.compile(loss='binary_crossentropy', optimizer='adam',\n",
-    "              metrics=['accuracy'])"
+    "model.add(SimpleRNN(100, activation='relu', input_shape=(lags, 1)))\n",
+    "model.add(Dense(1, activation='linear'))\n",
+    "model.compile(optimizer='rmsprop', loss='mse', metrics=['mae'])"
    ]
   },
   {
@@ -1856,7 +206,8 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "%time model.fit(x, yc, epochs=1500, verbose=False)"
+    "%%time\n",
+    "model.fit(g, epochs=150, steps_per_epoch=10, verbose=False);"
    ]
   },
   {
@@ -1865,7 +216,7 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "scores = model.evaluate(x, yc)"
+    "res = pd.DataFrame(model.history.history)"
    ]
   },
   {
@@ -1874,32 +225,138 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "print('accuracy: %.2f%%' % (scores[1] * 100))"
-   ]
-  },
-  {
-   "cell_type": "raw",
-   "id": "502786de",
-   "metadata": {
-    "auto_refactor_original_cell_type": "code",
-    "auto_refactor_role": "raw_backup"
-   },
-   "source": [
-    "# classification\n",
-    "pred = np.where(model.predict(x) > 0.5, 1, 0)"
+    "res.tail(3)"
    ]
   },
   {
    "cell_type": "code",
    "execution_count": null,
-   "id": "411ee951",
-   "metadata": {
-    "auto_refactor_role": "generated"
-   },
+   "metadata": {},
    "outputs": [],
    "source": [
-    "# classification\n",
-    "pred = np.where(model(tf.convert_to_tensor(x, dtype=tf.float32), training=False).numpy() > 0.5, 1, 0)"
+    "ax = res.plot(figsize=(10, 6), style=['--', '--'])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# make a one step prediction in-sample\n",
+    "x = np.array([21, 22, 23]).reshape((1, lags, 1))\n",
+    "y = model.predict(x, verbose=True)\n",
+    "y"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "y.round()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "int(round(y[0, 0]))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# make a one step prediction in-sample\n",
+    "x = np.array([87, 88, 89]).reshape((1, lags, 1))\n",
+    "y = model.predict(x, verbose=True)\n",
+    "y"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "y.round()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# make a one step prediction out of sample\n",
+    "x = np.array([187, 188, 189]).reshape((1, lags, 1))\n",
+    "y = model.predict(x, verbose=True)\n",
+    "y"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "y.round()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# make a one step prediction out of sample\n",
+    "x = np.array([1187, 1188, 1189]).reshape((1, lags, 1))\n",
+    "y = model.predict(x, verbose=True)\n",
+    "y"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "y.round()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Second Example"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def transform(x):\n",
+    "    y = 0.05 * x ** 2 + 0.2 * x + np.sin(x) + 5\n",
+    "    y += np.random.standard_normal(len(x)) * 0.2\n",
+    "    return y"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "x = np.linspace(-2 * np.pi, 2 * np.pi, 500)\n",
+    "a = transform(x)"
    ]
   },
   {
@@ -1909,9 +366,1072 @@
    "outputs": [],
    "source": [
     "plt.figure(figsize=(10, 6))\n",
-    "plt.plot(x, yc, 'ro', label='original data')\n",
-    "plt.plot(x, pred, label='prediction')\n",
+    "plt.plot(x, a);"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "a = a.reshape((len(a), -1))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "a[:5]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "lags = 5"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "g = TimeseriesGenerator(a, a, length=lags, batch_size=5)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# for _ in g:\n",
+    "#     print(_)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "model = Sequential()\n",
+    "model.add(SimpleRNN(500, activation='relu', input_shape=(lags, 1)))\n",
+    "model.add(Dense(1, activation='linear'))\n",
+    "model.compile(optimizer='rmsprop', loss='mse', metrics=['mae'])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "model.summary()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "%%time\n",
+    "model.fit(g, epochs=500, steps_per_epoch=10, verbose=False);"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "res = pd.DataFrame(model.history.history)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "res.tail(3)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "ax = res.plot(figsize=(10, 6), style=['--', '--'])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "x = np.linspace(-6 * np.pi, 6 * np.pi, 1000)\n",
+    "d = transform(x)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "len(d)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "lags=5"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "gd = TimeseriesGenerator(d, d, length=lags, batch_size=len(d))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#list(gd)[0][0].shape"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#f = list(gd)[0][0].reshape((len(d) - lags, lags, 1))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "y = model.predict(gd, verbose=True)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "plt.figure(figsize=(10, 6))\n",
+    "plt.plot(x[lags:], d[lags:], label='data')\n",
+    "plt.plot(x[lags:], y, 'r.', label='pred')\n",
+    "plt.axvline(-2 * np.pi, c='m')\n",
+    "plt.axvline(2 * np.pi, c='m')\n",
     "plt.legend();"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df = pd.DataFrame({'data': d[lags:], 'pred': y.reshape(1, -1)[0]}, index=x[lags:])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df.iplot()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Financial Data"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### The Data"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "raw = pd.read_csv('http://hilpisch.com/tr_eikon_eod_data.csv',\n",
+    "                  index_col=0, parse_dates=True).dropna()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "symbol = 'EUR='\n",
+    "data = pd.DataFrame(raw[symbol])\n",
+    "data.info()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "data = data.loc[:'2014-09-30']"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "data.info()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "data.iplot()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "split = int(len(data) * 0.7)\n",
+    "val_size = int(len(data) * 0.15)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "train = data.iloc[:split]\n",
+    "val = train[-val_size:]\n",
+    "train = train[:-val_size]\n",
+    "test = data.iloc[split:].copy()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "lags = 5\n",
+    "gtr = TimeseriesGenerator(train.values, train.values, length=lags, batch_size=10)\n",
+    "gva = TimeseriesGenerator(val.values, val.values, length=lags, batch_size=10)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# list(gtr)[0]"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Model Fitting"
+   ]
+  },
+  {
+   "cell_type": "raw",
+   "metadata": {},
+   "source": [
+    "model = Sequential()\n",
+    "model.add(SimpleRNN(250, activation='relu', input_shape=(lags, 1),\n",
+    "                    return_sequences=True))\n",
+    "model.add(SimpleRNN(250, activation='relu', input_shape=(lags, 1)))\n",
+    "model.add(Dense(1, activation='linear'))\n",
+    "model.compile(optimizer='rmsprop', loss='mse', metrics=['mae'])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "model = Sequential()\n",
+    "model.add(LSTM(250, activation='relu', input_shape=(lags, 1),\n",
+    "               return_sequences=True))\n",
+    "model.add(LSTM(250, activation='relu', input_shape=(lags, 1)))\n",
+    "model.add(Dense(1, activation='linear'))\n",
+    "model.compile(optimizer='rmsprop', loss='mse', metrics=['mae'])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "model.summary()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "%%time\n",
+    "model.fit(gtr, epochs=500, steps_per_epoch=10, verbose=False,\n",
+    "                    validation_data=gva);"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "res = pd.DataFrame(model.history.history)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "res.tail(3)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "to_plot = ['mae', 'val_mae']\n",
+    "ax = res[to_plot].iloc[2:].plot(figsize=(10, 6), style=['--', '--', '-', '-'])\n",
+    "x = np.arange(len(res));\n",
+    "reg = np.polyfit(x, res['val_mae'], deg=2)\n",
+    "plt.plot(x, np.polyval(reg, x), 'r');"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Model Testing"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "gte = TimeseriesGenerator(test.values, test.values, length=lags, batch_size=len(test))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#f = list(gte)[0][0].reshape((len(test) - lags, lags, 1))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "y = model.predict(gte, verbose=True)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "data[symbol].iplot()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "plt.figure(figsize=(10, 6))\n",
+    "plt.plot(test.index[lags:], test[lags:], label='data')\n",
+    "plt.plot(test.index[lags:], y, 'r.', label='pred')\n",
+    "plt.legend();"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df = pd.DataFrame({'data': test.values[lags:].reshape(1, -1)[0],\n",
+    "                   'pred': y.reshape(1, -1)[0]}, index=test.index[lags:])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df.iplot()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Patterns"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### The Data"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "symbol = 'EUR='\n",
+    "data = pd.DataFrame(raw[symbol])\n",
+    "data.info()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "nbins = 50"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "split = 1900\n",
+    "val_size = 400"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "train = data.iloc[1000:split]\n",
+    "val = train[-val_size:].copy()\n",
+    "train = train[:-val_size].copy()\n",
+    "test = data.iloc[split:].copy()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "adj = 0.002\n",
+    "mi = train.min()\n",
+    "ma = train.max()\n",
+    "bins = np.linspace(mi - adj, ma + adj, nbins).flatten()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "bins"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "train['o'] = np.digitize(train[symbol], bins)\n",
+    "val['o'] = np.digitize(val[symbol], bins)\n",
+    "test['o'] = np.digitize(test[symbol], bins)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "train.head(5)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "train.iloc[:150].iplot(secondary_y='o')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "lags = 15\n",
+    "gt = TimeseriesGenerator(train['o'].values, train['o'].values,\n",
+    "                         length=lags, batch_size=len(train))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "gtr = TimeseriesGenerator(train['o'].values.reshape(-1, 1),\n",
+    "                          train['o'].values.reshape(-1, 1),\n",
+    "                          length=lags, batch_size=10)\n",
+    "gva = TimeseriesGenerator(val['o'].values.reshape(-1, 1),\n",
+    "                          val['o'].values.reshape(-1, 1),\n",
+    "                          length=lags, batch_size=10)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# list(gtr)[0]"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Model Fitting"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "model = Sequential()\n",
+    "\n",
+    "model.add(SimpleRNN(100, activation='relu', input_shape=(lags, 1),\n",
+    "               return_sequences=True))    \n",
+    "model.add(SimpleRNN(100, activation='relu', input_shape=(lags, 1),))\n",
+    "model.add(Dense(1, activation='linear'))\n",
+    "\n",
+    "model.compile(optimizer='rmsprop', loss='mse', metrics=['mae'])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "model.summary()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "%%time\n",
+    "model.fit(gtr, epochs=150, steps_per_epoch=10, verbose=False,\n",
+    "                   validation_data=gva);"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "res = pd.DataFrame(model.history.history)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "res.tail(3)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "to_plot = ['mae', 'val_mae']\n",
+    "ax = res[to_plot].iloc[2:].plot(figsize=(10, 6), style=['--', '--', '-', '-'])\n",
+    "x = np.arange(len(res));\n",
+    "reg = np.polyfit(x, res['val_mae'], deg=2)\n",
+    "plt.plot(x, np.polyval(reg, x), 'r');"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#f = list(gt)[0][0].reshape((len(train) - lags, lags, 1))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "y = model.predict(gt, verbose=True)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df = pd.DataFrame({'level': train['o'].values[lags:].reshape(1, -1)[0],\n",
+    "                   'pred': y.reshape(1, -1)[0].round()}, index=train['o'].index[lags:])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df.iplot()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Model Testing"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "gte = TimeseriesGenerator(test['o'].values.reshape(-1, 1),\n",
+    "                          test['o'].values.reshape(-1, 1),\n",
+    "                          length=lags, batch_size=len(test))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#f = list(gte)[0][0].reshape((len(test) - lags, lags, 1))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "y = model.predict(gte, verbose=True)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "plt.figure(figsize=(10, 6))\n",
+    "plt.plot(test['o'].index[lags:], test['o'][lags:], label='level')\n",
+    "plt.plot(test['o'].index[lags:], y, 'r.', label='pred')\n",
+    "plt.legend();"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df = pd.DataFrame({'level': test['o'].values[lags:].reshape(1, -1)[0],\n",
+    "                   'pred': y.reshape(1, -1)[0].round()}, index=test['o'].index[lags:])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df.iplot()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Returns"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### The Data"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "symbol = 'EUR='\n",
+    "data = pd.DataFrame(raw[symbol])\n",
+    "data['r'] = np.log(data[symbol] / data[symbol].shift(1))\n",
+    "data['rs'] = np.log(data[symbol] / data[symbol].shift(1)) * 500\n",
+    "data['d'] = np.where(data['r'] > 0, 1, 0)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "lags = 10\n",
+    "cols = []\n",
+    "for lag in range(1, lags + 1):\n",
+    "    col = 'lag_{}'.format(lag)\n",
+    "    data[col] = data['r'].shift(lag)\n",
+    "    cols.append(col)\n",
+    "data.dropna(inplace=True)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "cols[::-1]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "data.head(5)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "len(data)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "split = 1600\n",
+    "val_size = 400"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "train = data.iloc[:split]\n",
+    "val = train[-val_size:]\n",
+    "train = train[:-val_size]\n",
+    "test = data.iloc[split:].copy()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Model Fitting"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from keras.layers import Dropout\n",
+    "from keras.callbacks import ModelCheckpoint"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "np.random.seed(100)\n",
+    "tf.random.set_seed(100)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "model = Sequential()\n",
+    "\n",
+    "# hidden layers\n",
+    "model.add(SimpleRNN(128, input_shape=(lags, 1),\n",
+    "                     return_sequences=True,\n",
+    "                    ))\n",
+    "model.add(Dropout(0.5, seed=100))\n",
+    "model.add(SimpleRNN(128, return_sequences=True))\n",
+    "model.add(Dropout(0.5, seed=100))\n",
+    "model.add(SimpleRNN(128))\n",
+    "\n",
+    "# output layer\n",
+    "model.add(Dense(1, activation='linear'))\n",
+    "\n",
+    "# model compilation\n",
+    "model.compile(optimizer='rmsprop',\n",
+    "              loss='mse',\n",
+    "              metrics=['mse'])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "model.summary()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "callbacks = [ModelCheckpoint(filepath='../../../data/.weights.h5',\n",
+    "                             monitor='val_mse',\n",
+    "                             verbose=0,\n",
+    "                             save_best_only=True,\n",
+    "                             save_weights_only=True,\n",
+    "                             mode='auto')]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "%%time\n",
+    "model.fit(train[cols[::-1]].values.reshape(len(train),lags, -1),\n",
+    "          train['r'].values.reshape(len(train), -1),\n",
+    "          epochs=25, batch_size=32, verbose=False,\n",
+    "          validation_data=(\n",
+    "              val[cols[::-1]].values.reshape(len(val),lags,-1),\n",
+    "              val['r'].values.reshape(len(val), -1)\n",
+    "          ), callbacks=callbacks);"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "res = pd.DataFrame(model.history.history)\n",
+    "res.tail(3)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "ax = res.plot(figsize=(10, 6), style=['--', '--', '-', '-'])\n",
+    "x = np.arange(len(res));\n",
+    "reg = np.polyfit(x, res['val_mse'], deg=2)\n",
+    "plt.plot(x, np.polyval(reg, x), 'r');"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Backtesting"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "model.load_weights('../../../data/.weights.h5')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "model.evaluate(test[cols].values.reshape(len(test), lags, -1),\n",
+    "               test['r'])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "test['p'] = model.predict(test[cols].values.reshape(len(test), lags, -1))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "test['p'] = np.where(test['p'] > 0, 1, -1)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "test['s'] = test['p'] * test['r']"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "test[['r', 's']].sum().apply(np.exp)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "test['p'].value_counts()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "test[['r', 's']].cumsum().apply(np.exp).iplot();"
    ]
   },
   {
@@ -1924,8 +1444,8 @@
  ],
  "metadata": {
   "kernelspec": {
-   "display_name": "Python 3",
-   "name": "python3"
+   "name": "python3",
+   "display_name": "Python 3"
   },
   "language_info": {
    "codemirror_mode": {

@@ -13,7 +13,7 @@
    "source": [
     "# AI-First Finance\n",
     "\n",
-    "**Features for Market Prediction**"
+    "**Estimation for Market Prediction**"
    ]
   },
   {
@@ -41,8 +41,8 @@
   },
   {
    "cell_type": "code",
-   "execution_count": null,
    "metadata": {},
+   "execution_count": null,
    "outputs": [],
    "source": [
     "!git clone https://github.com/tpq-classes/ai_in_finance.git\n",
@@ -92,7 +92,6 @@
     "end = '2019-03-27'\n",
     "granularity = 'M10'\n",
     "price = 'A'\n",
-    "# adjust path\n",
     "fn = f'../../../data/oanda_{symbol}_{start}_{end}_{granularity}_{price}.csv'\n",
     "fn"
    ]
@@ -127,35 +126,11 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "data = raw.copy()\n",
-    "data['r'] = np.log(data['c'] / data['c'].shift(1))\n",
-    "data['rs'] = (data['r'] - data['r'].mean()) / data['r'].std()\n",
+    "data = pd.DataFrame(raw['c'])\n",
+    "data.columns = [symbol]\n",
+    "data['r'] = np.log(data[symbol] / data[symbol].shift(1))\n",
     "data['d'] = np.where(data['r'] > 0, 1, 0)\n",
-    "data['c-o'] = data['c'] - data['o']\n",
-    "data['u-d'] = np.where(data['c'] - data['o'] > 0, 1, 0)\n",
-    "data['h-l'] = data['h'] - data['l']\n",
-    "data['h-o'] = data['h'] - data['o']\n",
-    "data['o-l'] = data['o'] - data['l']\n",
-    "data['h-c'] = data['h'] - data['c']\n",
-    "data['c-l'] = data['c'] - data['l']\n",
-    "data['v1'] = data['r'].rolling(20).std()\n",
-    "data['v2'] = data['r'].rolling(100).std()\n",
-    "data['sma1'] = data['c'].rolling(20).mean()\n",
-    "data['sma2'] = data['c'].rolling(100).mean()\n",
-    "data['mom1'] = data['r'].rolling(5).mean()\n",
-    "data['mom2'] = data['r'].rolling(20).mean()\n",
     "data.dropna(inplace=True)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "features = list(data.columns)\n",
-    "features.remove('complete')\n",
-    "# features"
    ]
   },
   {
@@ -174,8 +149,17 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "split = int(len(data) * 0.6)\n",
-    "val_size = int(split * 0.15)"
+    "split = int(ld * 0.6)\n",
+    "val_size = int(ld * 0.1)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "data.dropna(inplace=True)"
    ]
   },
   {
@@ -196,7 +180,7 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "lags = 10"
+    "lags = 5"
    ]
   },
   {
@@ -205,36 +189,16 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "def gaussian(x):\n",
-    "    mean = x.mean()\n",
-    "    std = x.std()\n",
-    "    return (x - mean) / std, mean, std"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "def normalize_and_lag():\n",
+    "def create_lags(df, mu, std):\n",
     "    global cols\n",
     "    cols = []\n",
-    "    for f in features:\n",
-    "        for lag in range(1, lags + 1):\n",
-    "            col = f'{f}_lag_{lag}'\n",
-    "            if f in ['r', 'rs', 'd', 'u-d']:\n",
-    "                train[col] = train[f].shift(lag)\n",
-    "                val[col] = val[f].shift(lag)\n",
-    "                test[col] = test[f].shift(lag)\n",
-    "            else:\n",
-    "                train[col], mean, std = gaussian(train[f].shift(lag))\n",
-    "                val[col] = (val[f].shift(lag) - mean) / std\n",
-    "                test[col] = (test[f].shift(lag) - mean) / std\n",
-    "            cols.append(col)\n",
-    "    train.dropna(inplace=True)\n",
-    "    val.dropna(inplace=True)\n",
-    "    test.dropna(inplace=True)"
+    "    df['rs'] = df['r'] - mu\n",
+    "    df['rs'] /= std\n",
+    "    for lag in range(1, lags + 1):\n",
+    "        col = 'lag_{}'.format(lag)\n",
+    "        df[col] = df['rs'].shift(lag)\n",
+    "        cols.append(col)\n",
+    "    df.dropna(inplace=True)"
    ]
   },
   {
@@ -243,16 +207,9 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "normalize_and_lag()"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "len(cols)"
+    "mu = train['r'].mean()\n",
+    "std = train['r'].std()\n",
+    "create_lags(train, mu, std)"
    ]
   },
   {
@@ -265,17 +222,46 @@
    ]
   },
   {
-   "cell_type": "markdown",
+   "cell_type": "code",
+   "execution_count": null,
    "metadata": {},
+   "outputs": [],
    "source": [
-    "## Estimation"
+    "create_lags(val, mu, std)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "val.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "create_lags(test, mu, std)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "test.head()"
    ]
   },
   {
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "### Scikit-Learn"
+    "## MLP Regressor"
    ]
   },
   {
@@ -293,9 +279,9 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "model = MLPRegressor(hidden_layer_sizes=(128, 128),\n",
+    "model = MLPRegressor(hidden_layer_sizes=(192, 192),\n",
     "                      activation='relu',\n",
-    "                      learning_rate_init=0.001,\n",
+    "                      learning_rate_init=0.0005,\n",
     "                      random_state=100,\n",
     "                      max_iter=500,\n",
     "                      validation_fraction=0.1,\n",
@@ -305,50 +291,30 @@
    ]
   },
   {
-   "cell_type": "raw",
-   "id": "0bafc8d8",
-   "metadata": {
-    "auto_refactor_original_cell_type": "code",
-    "auto_refactor_role": "raw_backup"
-   },
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
    "source": [
-    "%time model.fit(train[cols], train['r'])"
+    "%time model.fit(train[cols], train['rs'])"
    ]
   },
   {
    "cell_type": "code",
    "execution_count": null,
-   "id": "b3019535",
-   "metadata": {
-    "auto_refactor_role": "generated"
-   },
+   "metadata": {},
    "outputs": [],
    "source": [
-    "%time model.fit(train[cols], train['r'], verbose=0)"
+    "model.predict(test[cols])"
    ]
   },
   {
-   "cell_type": "raw",
-   "id": "c2b1e599",
-   "metadata": {
-    "auto_refactor_original_cell_type": "code",
-    "auto_refactor_role": "raw_backup"
-   },
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
    "source": [
     "test['p'] = model.predict(test[cols])\n",
-    "test['p'] = np.where(test['p'] > 0, 1, -1)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "9f79b849",
-   "metadata": {
-    "auto_refactor_role": "generated"
-   },
-   "outputs": [],
-   "source": [
-    "test['p'] = model(tf.convert_to_tensor(test[cols], dtype=tf.float32), training=False).numpy()\n",
     "test['p'] = np.where(test['p'] > 0, 1, -1)"
    ]
   },
@@ -401,7 +367,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "### Keras"
+    "## No Regularization"
    ]
   },
   {
@@ -421,10 +387,9 @@
    "outputs": [],
    "source": [
     "import tensorflow as tf\n",
+    "from tensorflow import keras\n",
     "from keras.models import Sequential\n",
-    "from keras.layers import Dense, Dropout\n",
-    "from keras.regularizers import l1, l2\n",
-    "from keras.callbacks import EarlyStopping, ModelCheckpoint"
+    "from keras.layers import Dense"
    ]
   },
   {
@@ -443,19 +408,22 @@
    "metadata": {},
    "outputs": [],
    "source": [
+    "opt = keras.optimizers.RMSprop(learning_rate=0.005, rho=0.9, decay=0.0)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
     "model = Sequential()\n",
     "\n",
-    "model.add(Dense(256, activation='relu',\n",
-    "               # kernel_regularizer=l2(0.001),\n",
-    "                input_shape=(len(cols),)))\n",
-    "model.add(Dropout(0.3, seed=100))\n",
-    "model.add(Dense(256, activation='relu',\n",
-    "               # kernel_regularizer=l2(0.001)\n",
-    "               ))\n",
-    "model.add(Dropout(0.3, seed=100))\n",
+    "model.add(Dense(2 ** 8, activation='relu', input_shape=(lags,)))\n",
+    "model.add(Dense(2 ** 8, activation='relu'))\n",
     "model.add(Dense(1, activation='linear'))\n",
     "\n",
-    "model.compile(optimizer='rmsprop', loss='mae', metrics=['mae'])"
+    "model.compile(optimizer=opt, loss='mae', metrics=['mae'])"
    ]
   },
   {
@@ -464,7 +432,7 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "model.summary()"
+    "scale = 1"
    ]
   },
   {
@@ -473,7 +441,7 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "callbacks = [EarlyStopping(monitor='val_mae', patience=75)]"
+    "val.info()"
    ]
   },
   {
@@ -483,12 +451,9 @@
    "outputs": [],
    "source": [
     "%%time\n",
-    "history = model.fit(train[cols], train['r'] * 5000,\n",
-    "                    epochs=250,\n",
-    "                    batch_size=32,\n",
-    "                    verbose=False,\n",
-    "                    validation_data=(val[cols], val['r'] * 5000),\n",
-    "                    callbacks=callbacks)"
+    "history = model.fit(train[cols], train['r'] * scale,\n",
+    "                    epochs=250, batch_size=32, verbose=False,\n",
+    "                    validation_data=(val[cols], val['r'] * scale));"
    ]
   },
   {
@@ -517,7 +482,7 @@
    "source": [
     "to_plot = ['mae', 'val_mae']\n",
     "ax = res[to_plot].plot(figsize=(10, 6), style=['--', '--', '-', '-'])\n",
-    "x = np.arange(len(res))\n",
+    "x = np.arange(len(res));\n",
     "reg = np.polyfit(x, res['val_mae'], deg=2)\n",
     "plt.plot(x, np.polyval(reg, x), 'r');"
    ]
@@ -528,31 +493,25 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "model.evaluate(test[cols], test['r'] * 5000)"
-   ]
-  },
-  {
-   "cell_type": "raw",
-   "id": "1e01c79b",
-   "metadata": {
-    "auto_refactor_original_cell_type": "code",
-    "auto_refactor_role": "raw_backup"
-   },
-   "source": [
-    "test['p'] = model.predict(test[cols])\n",
-    "test['p'] = np.where(test['p'] > 0, 1, -1)"
+    "model.evaluate(test[cols], test['r'] * scale)"
    ]
   },
   {
    "cell_type": "code",
    "execution_count": null,
-   "id": "07274b32",
-   "metadata": {
-    "auto_refactor_role": "generated"
-   },
+   "metadata": {},
    "outputs": [],
    "source": [
-    "test['p'] = model(tf.convert_to_tensor(test[cols], dtype=tf.float32), training=False).numpy()\n",
+    "model.predict(test[cols])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "test['p'] = model.predict(test[cols])\n",
     "test['p'] = np.where(test['p'] > 0, 1, -1)"
    ]
   },
@@ -605,14 +564,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "## Classification"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "### Scikit-Learn"
+    "## With Kernel Regularizer"
    ]
   },
   {
@@ -621,124 +573,7 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "from sklearn.neural_network import MLPClassifier"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "model = MLPClassifier(hidden_layer_sizes=(256, 256),\n",
-    "                      activation='relu',\n",
-    "                      alpha=0.0001,\n",
-    "                      random_state=100,\n",
-    "                      max_iter=200,\n",
-    "                      validation_fraction=0.1,\n",
-    "                      shuffle=False,\n",
-    "                      early_stopping=False,\n",
-    "                      verbose=False)"
-   ]
-  },
-  {
-   "cell_type": "raw",
-   "id": "d74f2cc4",
-   "metadata": {
-    "auto_refactor_original_cell_type": "code",
-    "auto_refactor_role": "raw_backup"
-   },
-   "source": [
-    "%time model.fit(train[cols], train['d'])"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "a697dfb0",
-   "metadata": {
-    "auto_refactor_role": "generated"
-   },
-   "outputs": [],
-   "source": [
-    "%time model.fit(train[cols], train['d'], verbose=0)"
-   ]
-  },
-  {
-   "cell_type": "raw",
-   "id": "df0b0ab9",
-   "metadata": {
-    "auto_refactor_original_cell_type": "code",
-    "auto_refactor_role": "raw_backup"
-   },
-   "source": [
-    "test['p'] = model.predict(test[cols])\n",
-    "test['p'] = np.where(test['p'] > 0, 1, -1)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "e70fcde4",
-   "metadata": {
-    "auto_refactor_role": "generated"
-   },
-   "outputs": [],
-   "source": [
-    "test['p'] = model(tf.convert_to_tensor(test[cols], dtype=tf.float32), training=False).numpy()\n",
-    "test['p'] = np.where(test['p'] > 0, 1, -1)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "test['s'] = test['p'] * test['r']"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "test[['r', 's']].sum().apply(np.exp)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "sum(test['p'].diff() != 0)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "test['p'].value_counts()"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "test[['r', 's']].cumsum().apply(np.exp).plot(figsize=(10, 6));"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "### Keras"
+    "from keras.regularizers import l1, l2"
    ]
   },
   {
@@ -759,40 +594,14 @@
    "source": [
     "model = Sequential()\n",
     "\n",
-    "model.add(Dense(128, activation='relu',\n",
-    "                # kernel_regularizer=l2(0.001),\n",
-    "                input_shape=(len(cols),)\n",
-    "               )\n",
-    "         )\n",
-    "model.add(Dropout(0.3, seed=100))\n",
-    "model.add(Dense(128, activation='relu',\n",
-    "                # kernel_regularizer=l2(0.001)\n",
-    "               )\n",
-    "         )\n",
-    "model.add(Dropout(0.3, seed=100))\n",
-    "model.add(Dense(1, activation='sigmoid'))\n",
+    "model.add(Dense(2 ** 8, activation='relu',\n",
+    "                kernel_regularizer=l2(0.001),\n",
+    "                input_shape=(lags,)))\n",
+    "model.add(Dense(2 ** 8, activation='relu',\n",
+    "                kernel_regularizer=l2(0.001)))\n",
+    "model.add(Dense(1, activation='linear'))\n",
     "\n",
-    "model.compile(optimizer='adam',\n",
-    "              loss='binary_crossentropy',\n",
-    "              metrics=['accuracy'])"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "model.summary()"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "callbacks = [EarlyStopping(monitor='val_accuracy', patience=25)]"
+    "model.compile(optimizer='rmsprop', loss='mae', metrics=['mae'])"
    ]
   },
   {
@@ -802,9 +611,323 @@
    "outputs": [],
    "source": [
     "%%time\n",
-    "model.fit(train[cols], train['d'],\n",
+    "model.fit(train[cols], train['rs'],\n",
     "          epochs=250, batch_size=32, verbose=False,\n",
-    "          validation_data=(val[cols], val['d']),\n",
+    "          validation_data=(val[cols], val['rs']));"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "res = pd.DataFrame(model.history.history)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "res.tail(3)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "to_plot = ['mae', 'val_mae']\n",
+    "ax = res[to_plot].plot(figsize=(10, 6), style=['--', '--', '-', '-'])\n",
+    "x = np.arange(len(res));\n",
+    "reg = np.polyfit(x, res['val_mae'], deg=2)\n",
+    "plt.plot(x, np.polyval(reg, x), 'rs');"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "model.evaluate(test[cols], test['rs'])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "test['p'] = model.predict(test[cols])\n",
+    "test['p'] = np.where(test['p'] > 0, 1, -1)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "test['s'] = test['p'] * test['r']"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "test[['r', 's']].sum().apply(np.exp)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "sum(test['p'].diff() != 0)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "test['p'].value_counts()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "test[['r', 's']].cumsum().apply(np.exp).plot(figsize=(10, 6));"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## With Dropout"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from keras.layers import Dropout"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "np.random.seed(100)\n",
+    "tf.random.set_seed(100)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "model = Sequential()\n",
+    "\n",
+    "model.add(Dense(2 ** 8, activation='relu',\n",
+    "                input_shape=(lags,)))\n",
+    "model.add(Dropout(0.3, seed=100))\n",
+    "model.add(Dense(2 ** 8, activation='relu'))\n",
+    "model.add(Dropout(0.3, seed=100))\n",
+    "model.add(Dense(1, activation='linear'))\n",
+    "\n",
+    "model.compile(optimizer='rmsprop', loss='mse', metrics=['mse'])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "%%time\n",
+    "model.fit(train[cols], train['rs'],\n",
+    "          epochs=125, batch_size=32, verbose=False,\n",
+    "          validation_data=(val[cols], val['rs']));"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "res = pd.DataFrame(model.history.history)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "res.tail(3)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "to_plot = ['mse', 'val_mse']\n",
+    "ax = res[to_plot].plot(figsize=(10, 6), style=['--', '--', '-', '-'])\n",
+    "x = np.arange(len(res));\n",
+    "reg = np.polyfit(x, res['val_mse'], deg=2)\n",
+    "plt.plot(x, np.polyval(reg, x), 'r');"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "model.evaluate(test[cols], test['rs'])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "test['p'] = model.predict(test[cols])\n",
+    "test['p'] = np.where(test['p'] > 0, 1, -1)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "test['s'] = test['p'] * test['r']"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "test[['r', 's']].sum().apply(np.exp)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "sum(test['p'].diff() != 0)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "test['p'].value_counts()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "test[['r', 's']].cumsum().apply(np.exp).plot(figsize=(10, 6));"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Early Stopping"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from keras.callbacks import EarlyStopping"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "np.random.seed(100)\n",
+    "tf.random.set_seed(100)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "model = Sequential()\n",
+    "\n",
+    "model.add(Dense(2 ** 8, activation='relu',\n",
+    "                # kernel_regularizer=l2(0.001),\n",
+    "                input_shape=(lags,)))\n",
+    "model.add(Dropout(0.3, seed=100))\n",
+    "model.add(Dense(2 ** 8, activation='relu',\n",
+    "                # kernel_regularizer=l2(0.001)\n",
+    "               ))\n",
+    "model.add(Dropout(0.3, seed=100))\n",
+    "model.add(Dense(1, activation='linear'))\n",
+    "\n",
+    "model.compile(optimizer='rmsprop', loss='mse', metrics=['mse'])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "callbacks = [EarlyStopping(monitor='val_mse', patience=25)]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "%%time\n",
+    "model.fit(train[cols], train['rs'],\n",
+    "          epochs=125, batch_size=32, verbose=False,\n",
+    "          validation_data=(val[cols], val['rs']),\n",
     "          callbacks=callbacks);"
    ]
   },
@@ -832,7 +955,11 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "res.plot(figsize=(10, 6), style=['--', '--', '-', '-']);"
+    "to_plot = ['mse', 'val_mse']\n",
+    "ax = res[to_plot].plot(figsize=(10, 6), style=['--', '--', '-', '-'])\n",
+    "x = np.arange(len(res));\n",
+    "reg = np.polyfit(x, res['val_mse'], deg=2)\n",
+    "plt.plot(x, np.polyval(reg, x), 'r');"
    ]
   },
   {
@@ -841,32 +968,7 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "model.evaluate(test[cols], test['d'])"
-   ]
-  },
-  {
-   "cell_type": "raw",
-   "id": "e1921e04",
-   "metadata": {
-    "auto_refactor_original_cell_type": "code",
-    "auto_refactor_role": "raw_backup"
-   },
-   "source": [
-    "test['p'] = np.where(model.predict(test[cols]) > 0.5, 1, 0)\n",
-    "test['p'] = np.where(test['p'] > 0, 1, -1)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "0bf4760c",
-   "metadata": {
-    "auto_refactor_role": "generated"
-   },
-   "outputs": [],
-   "source": [
-    "test['p'] = np.where(model(tf.convert_to_tensor(test[cols], dtype=tf.float32), training=False).numpy() > 0.5, 1, 0)\n",
-    "test['p'] = np.where(test['p'] > 0, 1, -1)"
+    "model.evaluate(test[cols], test['rs'])"
    ]
   },
   {
@@ -875,470 +977,7 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "test['s'] = test['p'] * test['r']"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "test[['r', 's']].sum().apply(np.exp)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "sum(test['p'].diff() != 0)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "test['p'].value_counts()"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "test[['r', 's']].cumsum().apply(np.exp).plot(figsize=(10, 6));"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "## Feature Selection"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "### Selection"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "from sklearn.feature_selection import SelectKBest, f_classif"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "selector = SelectKBest(f_classif, k=50)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "cols_sel = selector.fit(train[cols], train['d']).get_support(indices=True)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "cols_sel"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "csel = train.columns[cols_sel]\n",
-    "csel"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "### Scikit-Learn"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "from sklearn.neural_network import MLPClassifier"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "model = MLPClassifier(hidden_layer_sizes=(128, 128),\n",
-    "                      activation='relu',\n",
-    "                      learning_rate_init=0.001,\n",
-    "                      random_state=100,\n",
-    "                      max_iter=500,\n",
-    "                      validation_fraction=0.1,\n",
-    "                      shuffle=False,\n",
-    "                      early_stopping=False,\n",
-    "                      verbose=False)"
-   ]
-  },
-  {
-   "cell_type": "raw",
-   "id": "d93f216e",
-   "metadata": {
-    "auto_refactor_original_cell_type": "code",
-    "auto_refactor_role": "raw_backup"
-   },
-   "source": [
-    "%time model.fit(train[csel], train['d'])"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "be9c5ffc",
-   "metadata": {
-    "auto_refactor_role": "generated"
-   },
-   "outputs": [],
-   "source": [
-    "%time model.fit(train[csel], train['d'], verbose=0)"
-   ]
-  },
-  {
-   "cell_type": "raw",
-   "id": "f802ea85",
-   "metadata": {
-    "auto_refactor_original_cell_type": "code",
-    "auto_refactor_role": "raw_backup"
-   },
-   "source": [
-    "test['p'] = model.predict(test[csel])\n",
-    "test['p'] = np.where(test['p'] > 0, 1, -1)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "4598ef1f",
-   "metadata": {
-    "auto_refactor_role": "generated"
-   },
-   "outputs": [],
-   "source": [
-    "test['p'] = model(tf.convert_to_tensor(test[csel], dtype=tf.float32), training=False).numpy()\n",
-    "test['p'] = np.where(test['p'] > 0, 1, -1)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "test['s'] = test['p'] * test['r']"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "test[['r', 's']].sum().apply(np.exp)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "sum(test['p'].diff() != 0)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "test['p'].value_counts()"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "test[['r', 's']].cumsum().apply(np.exp).plot(figsize=(10, 6));"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "### Keras"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "np.random.seed(100)\n",
-    "tf.random.set_seed(100)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "model = Sequential()\n",
-    "\n",
-    "model.add(Dense(128, activation='relu',\n",
-    "                input_shape=(len(csel),)\n",
-    "               )\n",
-    "         )\n",
-    "#model.add(Dropout(0.3, seed=100))\n",
-    "model.add(Dense(128, activation='relu',\n",
-    "               )\n",
-    "         )\n",
-    "#model.add(Dropout(0.3, seed=100))\n",
-    "model.add(Dense(1, activation='sigmoid'))\n",
-    "\n",
-    "model.compile(optimizer='adam',\n",
-    "              loss='binary_crossentropy',\n",
-    "              metrics=['accuracy'])"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "# ModelCheckpoint?"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "# callbacks = [EarlyStopping(monitor='val_acc', patience=50)]\n",
-    "callbacks = [ModelCheckpoint(filepath='../../../data/.weights.h5',\n",
-    "                             monitor='val_accuracy',\n",
-    "                             verbose=0,\n",
-    "                             save_best_only=True,\n",
-    "                             save_weights_only=True,\n",
-    "                             mode='auto')]"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "%%time\n",
-    "model.fit(train[csel], train['d'],\n",
-    "          epochs=125, batch_size=32, verbose=False,\n",
-    "          validation_data=(val[csel], val['d']),\n",
-    "          callbacks=callbacks\n",
-    "         );"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "### Regular Results"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "res = pd.DataFrame(model.history.history)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "res.tail(3)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "res[['accuracy', 'val_accuracy']].plot(figsize=(10, 6), style=['--', '--', '-', '-']);"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "model.evaluate(test[csel], test['d'])"
-   ]
-  },
-  {
-   "cell_type": "raw",
-   "id": "0c43de71",
-   "metadata": {
-    "auto_refactor_original_cell_type": "code",
-    "auto_refactor_role": "raw_backup"
-   },
-   "source": [
-    "test['p'] = np.where(model.predict(test[csel]) > 0.5, 1, 0)\n",
-    "test['p'] = np.where(test['p'] > 0, 1, -1)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "15aaf42f",
-   "metadata": {
-    "auto_refactor_role": "generated"
-   },
-   "outputs": [],
-   "source": [
-    "test['p'] = np.where(model(tf.convert_to_tensor(test[csel], dtype=tf.float32), training=False).numpy() > 0.5, 1, 0)\n",
-    "test['p'] = np.where(test['p'] > 0, 1, -1)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "test['s'] = test['p'] * test['r']"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "test[['r', 's']].sum().apply(np.exp)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "sum(test['p'].diff() != 0)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "test['p'].value_counts()"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "test[['r', 's']].cumsum().apply(np.exp).plot(figsize=(10, 6));"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "### Best Weights (Validation)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "model.load_weights('../../../data/.weights.h5')"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "model.evaluate(test[csel], test['d'])"
-   ]
-  },
-  {
-   "cell_type": "raw",
-   "id": "29005cfc",
-   "metadata": {
-    "auto_refactor_original_cell_type": "code",
-    "auto_refactor_role": "raw_backup"
-   },
-   "source": [
-    "test['p'] = np.where(model.predict(test[csel]) > 0.5, 1, 0)\n",
-    "test['p'] = np.where(test['p'] > 0, 1, -1)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "d4b708b4",
-   "metadata": {
-    "auto_refactor_role": "generated"
-   },
-   "outputs": [],
-   "source": [
-    "test['p'] = np.where(model(tf.convert_to_tensor(test[csel], dtype=tf.float32), training=False).numpy() > 0.5, 1, 0)\n",
+    "test['p'] = model.predict(test[cols])\n",
     "test['p'] = np.where(test['p'] > 0, 1, -1)"
    ]
   },
@@ -1397,8 +1036,8 @@
  ],
  "metadata": {
   "kernelspec": {
-   "display_name": "Python 3",
-   "name": "python3"
+   "name": "python3",
+   "display_name": "Python 3"
   },
   "language_info": {
    "codemirror_mode": {

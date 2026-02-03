@@ -1,0 +1,3825 @@
+diff --git a/classification.ipynb b/classification.ipynb
+index d337d71..32b984b 100644
+--- a/classification.ipynb
++++ b/classification.ipynb
+@@ -41,8 +41,8 @@
+   },
+   {
+    "cell_type": "code",
+-   "metadata": {},
+    "execution_count": null,
++   "metadata": {},
+    "outputs": [],
+    "source": [
+     "!git clone https://github.com/tpq-classes/ai_in_finance.git\n",
+@@ -868,473 +868,76 @@
+    ]
+   },
+   {
+-   "cell_type": "code",
+-   "execution_count": 21,
+-   "metadata": {},
+-   "outputs": [
+-    {
+-     "name": "stdout",
+-     "output_type": "stream",
+-     "text": [
+-      "CPU times: user 32.2 s, sys: 2.23 s, total: 34.4 s\n",
+-      "Wall time: 17.5 s\n"
+-     ]
+-    },
+-    {
+-     "data": {
+-      "text/html": [
+-       "<style>#sk-container-id-1 {\n",
+-       "  /* Definition of color scheme common for light and dark mode */\n",
+-       "  --sklearn-color-text: black;\n",
+-       "  --sklearn-color-line: gray;\n",
+-       "  /* Definition of color scheme for unfitted estimators */\n",
+-       "  --sklearn-color-unfitted-level-0: #fff5e6;\n",
+-       "  --sklearn-color-unfitted-level-1: #f6e4d2;\n",
+-       "  --sklearn-color-unfitted-level-2: #ffe0b3;\n",
+-       "  --sklearn-color-unfitted-level-3: chocolate;\n",
+-       "  /* Definition of color scheme for fitted estimators */\n",
+-       "  --sklearn-color-fitted-level-0: #f0f8ff;\n",
+-       "  --sklearn-color-fitted-level-1: #d4ebff;\n",
+-       "  --sklearn-color-fitted-level-2: #b3dbfd;\n",
+-       "  --sklearn-color-fitted-level-3: cornflowerblue;\n",
+-       "\n",
+-       "  /* Specific color for light theme */\n",
+-       "  --sklearn-color-text-on-default-background: var(--sg-text-color, var(--theme-code-foreground, var(--jp-content-font-color1, black)));\n",
+-       "  --sklearn-color-background: var(--sg-background-color, var(--theme-background, var(--jp-layout-color0, white)));\n",
+-       "  --sklearn-color-border-box: var(--sg-text-color, var(--theme-code-foreground, var(--jp-content-font-color1, black)));\n",
+-       "  --sklearn-color-icon: #696969;\n",
+-       "\n",
+-       "  @media (prefers-color-scheme: dark) {\n",
+-       "    /* Redefinition of color scheme for dark theme */\n",
+-       "    --sklearn-color-text-on-default-background: var(--sg-text-color, var(--theme-code-foreground, var(--jp-content-font-color1, white)));\n",
+-       "    --sklearn-color-background: var(--sg-background-color, var(--theme-background, var(--jp-layout-color0, #111)));\n",
+-       "    --sklearn-color-border-box: var(--sg-text-color, var(--theme-code-foreground, var(--jp-content-font-color1, white)));\n",
+-       "    --sklearn-color-icon: #878787;\n",
+-       "  }\n",
+-       "}\n",
+-       "\n",
+-       "#sk-container-id-1 {\n",
+-       "  color: var(--sklearn-color-text);\n",
+-       "}\n",
+-       "\n",
+-       "#sk-container-id-1 pre {\n",
+-       "  padding: 0;\n",
+-       "}\n",
+-       "\n",
+-       "#sk-container-id-1 input.sk-hidden--visually {\n",
+-       "  border: 0;\n",
+-       "  clip: rect(1px 1px 1px 1px);\n",
+-       "  clip: rect(1px, 1px, 1px, 1px);\n",
+-       "  height: 1px;\n",
+-       "  margin: -1px;\n",
+-       "  overflow: hidden;\n",
+-       "  padding: 0;\n",
+-       "  position: absolute;\n",
+-       "  width: 1px;\n",
+-       "}\n",
+-       "\n",
+-       "#sk-container-id-1 div.sk-dashed-wrapped {\n",
+-       "  border: 1px dashed var(--sklearn-color-line);\n",
+-       "  margin: 0 0.4em 0.5em 0.4em;\n",
+-       "  box-sizing: border-box;\n",
+-       "  padding-bottom: 0.4em;\n",
+-       "  background-color: var(--sklearn-color-background);\n",
+-       "}\n",
+-       "\n",
+-       "#sk-container-id-1 div.sk-container {\n",
+-       "  /* jupyter's `normalize.less` sets `[hidden] { display: none; }`\n",
+-       "     but bootstrap.min.css set `[hidden] { display: none !important; }`\n",
+-       "     so we also need the `!important` here to be able to override the\n",
+-       "     default hidden behavior on the sphinx rendered scikit-learn.org.\n",
+-       "     See: https://github.com/scikit-learn/scikit-learn/issues/21755 */\n",
+-       "  display: inline-block !important;\n",
+-       "  position: relative;\n",
+-       "}\n",
+-       "\n",
+-       "#sk-container-id-1 div.sk-text-repr-fallback {\n",
+-       "  display: none;\n",
+-       "}\n",
+-       "\n",
+-       "div.sk-parallel-item,\n",
+-       "div.sk-serial,\n",
+-       "div.sk-item {\n",
+-       "  /* draw centered vertical line to link estimators */\n",
+-       "  background-image: linear-gradient(var(--sklearn-color-text-on-default-background), var(--sklearn-color-text-on-default-background));\n",
+-       "  background-size: 2px 100%;\n",
+-       "  background-repeat: no-repeat;\n",
+-       "  background-position: center center;\n",
+-       "}\n",
+-       "\n",
+-       "/* Parallel-specific style estimator block */\n",
+-       "\n",
+-       "#sk-container-id-1 div.sk-parallel-item::after {\n",
+-       "  content: \"\";\n",
+-       "  width: 100%;\n",
+-       "  border-bottom: 2px solid var(--sklearn-color-text-on-default-background);\n",
+-       "  flex-grow: 1;\n",
+-       "}\n",
+-       "\n",
+-       "#sk-container-id-1 div.sk-parallel {\n",
+-       "  display: flex;\n",
+-       "  align-items: stretch;\n",
+-       "  justify-content: center;\n",
+-       "  background-color: var(--sklearn-color-background);\n",
+-       "  position: relative;\n",
+-       "}\n",
+-       "\n",
+-       "#sk-container-id-1 div.sk-parallel-item {\n",
+-       "  display: flex;\n",
+-       "  flex-direction: column;\n",
+-       "}\n",
+-       "\n",
+-       "#sk-container-id-1 div.sk-parallel-item:first-child::after {\n",
+-       "  align-self: flex-end;\n",
+-       "  width: 50%;\n",
+-       "}\n",
+-       "\n",
+-       "#sk-container-id-1 div.sk-parallel-item:last-child::after {\n",
+-       "  align-self: flex-start;\n",
+-       "  width: 50%;\n",
+-       "}\n",
+-       "\n",
+-       "#sk-container-id-1 div.sk-parallel-item:only-child::after {\n",
+-       "  width: 0;\n",
+-       "}\n",
+-       "\n",
+-       "/* Serial-specific style estimator block */\n",
+-       "\n",
+-       "#sk-container-id-1 div.sk-serial {\n",
+-       "  display: flex;\n",
+-       "  flex-direction: column;\n",
+-       "  align-items: center;\n",
+-       "  background-color: var(--sklearn-color-background);\n",
+-       "  padding-right: 1em;\n",
+-       "  padding-left: 1em;\n",
+-       "}\n",
+-       "\n",
+-       "\n",
+-       "/* Toggleable style: style used for estimator/Pipeline/ColumnTransformer box that is\n",
+-       "clickable and can be expanded/collapsed.\n",
+-       "- Pipeline and ColumnTransformer use this feature and define the default style\n",
+-       "- Estimators will overwrite some part of the style using the `sk-estimator` class\n",
+-       "*/\n",
+-       "\n",
+-       "/* Pipeline and ColumnTransformer style (default) */\n",
+-       "\n",
+-       "#sk-container-id-1 div.sk-toggleable {\n",
+-       "  /* Default theme specific background. It is overwritten whether we have a\n",
+-       "  specific estimator or a Pipeline/ColumnTransformer */\n",
+-       "  background-color: var(--sklearn-color-background);\n",
+-       "}\n",
+-       "\n",
+-       "/* Toggleable label */\n",
+-       "#sk-container-id-1 label.sk-toggleable__label {\n",
+-       "  cursor: pointer;\n",
+-       "  display: block;\n",
+-       "  width: 100%;\n",
+-       "  margin-bottom: 0;\n",
+-       "  padding: 0.5em;\n",
+-       "  box-sizing: border-box;\n",
+-       "  text-align: center;\n",
+-       "}\n",
+-       "\n",
+-       "#sk-container-id-1 label.sk-toggleable__label-arrow:before {\n",
+-       "  /* Arrow on the left of the label */\n",
+-       "  content: \"▸\";\n",
+-       "  float: left;\n",
+-       "  margin-right: 0.25em;\n",
+-       "  color: var(--sklearn-color-icon);\n",
+-       "}\n",
+-       "\n",
+-       "#sk-container-id-1 label.sk-toggleable__label-arrow:hover:before {\n",
+-       "  color: var(--sklearn-color-text);\n",
+-       "}\n",
+-       "\n",
+-       "/* Toggleable content - dropdown */\n",
+-       "\n",
+-       "#sk-container-id-1 div.sk-toggleable__content {\n",
+-       "  max-height: 0;\n",
+-       "  max-width: 0;\n",
+-       "  overflow: hidden;\n",
+-       "  text-align: left;\n",
+-       "  /* unfitted */\n",
+-       "  background-color: var(--sklearn-color-unfitted-level-0);\n",
+-       "}\n",
+-       "\n",
+-       "#sk-container-id-1 div.sk-toggleable__content.fitted {\n",
+-       "  /* fitted */\n",
+-       "  background-color: var(--sklearn-color-fitted-level-0);\n",
+-       "}\n",
+-       "\n",
+-       "#sk-container-id-1 div.sk-toggleable__content pre {\n",
+-       "  margin: 0.2em;\n",
+-       "  border-radius: 0.25em;\n",
+-       "  color: var(--sklearn-color-text);\n",
+-       "  /* unfitted */\n",
+-       "  background-color: var(--sklearn-color-unfitted-level-0);\n",
+-       "}\n",
+-       "\n",
+-       "#sk-container-id-1 div.sk-toggleable__content.fitted pre {\n",
+-       "  /* unfitted */\n",
+-       "  background-color: var(--sklearn-color-fitted-level-0);\n",
+-       "}\n",
+-       "\n",
+-       "#sk-container-id-1 input.sk-toggleable__control:checked~div.sk-toggleable__content {\n",
+-       "  /* Expand drop-down */\n",
+-       "  max-height: 200px;\n",
+-       "  max-width: 100%;\n",
+-       "  overflow: auto;\n",
+-       "}\n",
+-       "\n",
+-       "#sk-container-id-1 input.sk-toggleable__control:checked~label.sk-toggleable__label-arrow:before {\n",
+-       "  content: \"▾\";\n",
+-       "}\n",
+-       "\n",
+-       "/* Pipeline/ColumnTransformer-specific style */\n",
+-       "\n",
+-       "#sk-container-id-1 div.sk-label input.sk-toggleable__control:checked~label.sk-toggleable__label {\n",
+-       "  color: var(--sklearn-color-text);\n",
+-       "  background-color: var(--sklearn-color-unfitted-level-2);\n",
+-       "}\n",
+-       "\n",
+-       "#sk-container-id-1 div.sk-label.fitted input.sk-toggleable__control:checked~label.sk-toggleable__label {\n",
+-       "  background-color: var(--sklearn-color-fitted-level-2);\n",
+-       "}\n",
+-       "\n",
+-       "/* Estimator-specific style */\n",
+-       "\n",
+-       "/* Colorize estimator box */\n",
+-       "#sk-container-id-1 div.sk-estimator input.sk-toggleable__control:checked~label.sk-toggleable__label {\n",
+-       "  /* unfitted */\n",
+-       "  background-color: var(--sklearn-color-unfitted-level-2);\n",
+-       "}\n",
+-       "\n",
+-       "#sk-container-id-1 div.sk-estimator.fitted input.sk-toggleable__control:checked~label.sk-toggleable__label {\n",
+-       "  /* fitted */\n",
+-       "  background-color: var(--sklearn-color-fitted-level-2);\n",
+-       "}\n",
+-       "\n",
+-       "#sk-container-id-1 div.sk-label label.sk-toggleable__label,\n",
+-       "#sk-container-id-1 div.sk-label label {\n",
+-       "  /* The background is the default theme color */\n",
+-       "  color: var(--sklearn-color-text-on-default-background);\n",
+-       "}\n",
+-       "\n",
+-       "/* On hover, darken the color of the background */\n",
+-       "#sk-container-id-1 div.sk-label:hover label.sk-toggleable__label {\n",
+-       "  color: var(--sklearn-color-text);\n",
+-       "  background-color: var(--sklearn-color-unfitted-level-2);\n",
+-       "}\n",
+-       "\n",
+-       "/* Label box, darken color on hover, fitted */\n",
+-       "#sk-container-id-1 div.sk-label.fitted:hover label.sk-toggleable__label.fitted {\n",
+-       "  color: var(--sklearn-color-text);\n",
+-       "  background-color: var(--sklearn-color-fitted-level-2);\n",
+-       "}\n",
+-       "\n",
+-       "/* Estimator label */\n",
+-       "\n",
+-       "#sk-container-id-1 div.sk-label label {\n",
+-       "  font-family: monospace;\n",
+-       "  font-weight: bold;\n",
+-       "  display: inline-block;\n",
+-       "  line-height: 1.2em;\n",
+-       "}\n",
+-       "\n",
+-       "#sk-container-id-1 div.sk-label-container {\n",
+-       "  text-align: center;\n",
+-       "}\n",
+-       "\n",
+-       "/* Estimator-specific */\n",
+-       "#sk-container-id-1 div.sk-estimator {\n",
+-       "  font-family: monospace;\n",
+-       "  border: 1px dotted var(--sklearn-color-border-box);\n",
+-       "  border-radius: 0.25em;\n",
+-       "  box-sizing: border-box;\n",
+-       "  margin-bottom: 0.5em;\n",
+-       "  /* unfitted */\n",
+-       "  background-color: var(--sklearn-color-unfitted-level-0);\n",
+-       "}\n",
+-       "\n",
+-       "#sk-container-id-1 div.sk-estimator.fitted {\n",
+-       "  /* fitted */\n",
+-       "  background-color: var(--sklearn-color-fitted-level-0);\n",
+-       "}\n",
+-       "\n",
+-       "/* on hover */\n",
+-       "#sk-container-id-1 div.sk-estimator:hover {\n",
+-       "  /* unfitted */\n",
+-       "  background-color: var(--sklearn-color-unfitted-level-2);\n",
+-       "}\n",
+-       "\n",
+-       "#sk-container-id-1 div.sk-estimator.fitted:hover {\n",
+-       "  /* fitted */\n",
+-       "  background-color: var(--sklearn-color-fitted-level-2);\n",
+-       "}\n",
+-       "\n",
+-       "/* Specification for estimator info (e.g. \"i\" and \"?\") */\n",
+-       "\n",
+-       "/* Common style for \"i\" and \"?\" */\n",
+-       "\n",
+-       ".sk-estimator-doc-link,\n",
+-       "a:link.sk-estimator-doc-link,\n",
+-       "a:visited.sk-estimator-doc-link {\n",
+-       "  float: right;\n",
+-       "  font-size: smaller;\n",
+-       "  line-height: 1em;\n",
+-       "  font-family: monospace;\n",
+-       "  background-color: var(--sklearn-color-background);\n",
+-       "  border-radius: 1em;\n",
+-       "  height: 1em;\n",
+-       "  width: 1em;\n",
+-       "  text-decoration: none !important;\n",
+-       "  margin-left: 1ex;\n",
+-       "  /* unfitted */\n",
+-       "  border: var(--sklearn-color-unfitted-level-1) 1pt solid;\n",
+-       "  color: var(--sklearn-color-unfitted-level-1);\n",
+-       "}\n",
+-       "\n",
+-       ".sk-estimator-doc-link.fitted,\n",
+-       "a:link.sk-estimator-doc-link.fitted,\n",
+-       "a:visited.sk-estimator-doc-link.fitted {\n",
+-       "  /* fitted */\n",
+-       "  border: var(--sklearn-color-fitted-level-1) 1pt solid;\n",
+-       "  color: var(--sklearn-color-fitted-level-1);\n",
+-       "}\n",
+-       "\n",
+-       "/* On hover */\n",
+-       "div.sk-estimator:hover .sk-estimator-doc-link:hover,\n",
+-       ".sk-estimator-doc-link:hover,\n",
+-       "div.sk-label-container:hover .sk-estimator-doc-link:hover,\n",
+-       ".sk-estimator-doc-link:hover {\n",
+-       "  /* unfitted */\n",
+-       "  background-color: var(--sklearn-color-unfitted-level-3);\n",
+-       "  color: var(--sklearn-color-background);\n",
+-       "  text-decoration: none;\n",
+-       "}\n",
+-       "\n",
+-       "div.sk-estimator.fitted:hover .sk-estimator-doc-link.fitted:hover,\n",
+-       ".sk-estimator-doc-link.fitted:hover,\n",
+-       "div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,\n",
+-       ".sk-estimator-doc-link.fitted:hover {\n",
+-       "  /* fitted */\n",
+-       "  background-color: var(--sklearn-color-fitted-level-3);\n",
+-       "  color: var(--sklearn-color-background);\n",
+-       "  text-decoration: none;\n",
+-       "}\n",
+-       "\n",
+-       "/* Span, style for the box shown on hovering the info icon */\n",
+-       ".sk-estimator-doc-link span {\n",
+-       "  display: none;\n",
+-       "  z-index: 9999;\n",
+-       "  position: relative;\n",
+-       "  font-weight: normal;\n",
+-       "  right: .2ex;\n",
+-       "  padding: .5ex;\n",
+-       "  margin: .5ex;\n",
+-       "  width: min-content;\n",
+-       "  min-width: 20ex;\n",
+-       "  max-width: 50ex;\n",
+-       "  color: var(--sklearn-color-text);\n",
+-       "  box-shadow: 2pt 2pt 4pt #999;\n",
+-       "  /* unfitted */\n",
+-       "  background: var(--sklearn-color-unfitted-level-0);\n",
+-       "  border: .5pt solid var(--sklearn-color-unfitted-level-3);\n",
+-       "}\n",
+-       "\n",
+-       ".sk-estimator-doc-link.fitted span {\n",
+-       "  /* fitted */\n",
+-       "  background: var(--sklearn-color-fitted-level-0);\n",
+-       "  border: var(--sklearn-color-fitted-level-3);\n",
+-       "}\n",
+-       "\n",
+-       ".sk-estimator-doc-link:hover span {\n",
+-       "  display: block;\n",
+-       "}\n",
+-       "\n",
+-       "/* \"?\"-specific style due to the `<a>` HTML tag */\n",
+-       "\n",
+-       "#sk-container-id-1 a.estimator_doc_link {\n",
+-       "  float: right;\n",
+-       "  font-size: 1rem;\n",
+-       "  line-height: 1em;\n",
+-       "  font-family: monospace;\n",
+-       "  background-color: var(--sklearn-color-background);\n",
+-       "  border-radius: 1rem;\n",
+-       "  height: 1rem;\n",
+-       "  width: 1rem;\n",
+-       "  text-decoration: none;\n",
+-       "  /* unfitted */\n",
+-       "  color: var(--sklearn-color-unfitted-level-1);\n",
+-       "  border: var(--sklearn-color-unfitted-level-1) 1pt solid;\n",
+-       "}\n",
+-       "\n",
+-       "#sk-container-id-1 a.estimator_doc_link.fitted {\n",
+-       "  /* fitted */\n",
+-       "  border: var(--sklearn-color-fitted-level-1) 1pt solid;\n",
+-       "  color: var(--sklearn-color-fitted-level-1);\n",
+-       "}\n",
+-       "\n",
+-       "/* On hover */\n",
+-       "#sk-container-id-1 a.estimator_doc_link:hover {\n",
+-       "  /* unfitted */\n",
+-       "  background-color: var(--sklearn-color-unfitted-level-3);\n",
+-       "  color: var(--sklearn-color-background);\n",
+-       "  text-decoration: none;\n",
+-       "}\n",
+-       "\n",
+-       "#sk-container-id-1 a.estimator_doc_link.fitted:hover {\n",
+-       "  /* fitted */\n",
+-       "  background-color: var(--sklearn-color-fitted-level-3);\n",
+-       "}\n",
+-       "</style><div id=\"sk-container-id-1\" class=\"sk-top-container\"><div class=\"sk-text-repr-fallback\"><pre>MLPClassifier(hidden_layer_sizes=(128, 128, 128), max_iter=500,\n",
+-       "              random_state=100, shuffle=False)</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class=\"sk-container\" hidden><div class=\"sk-item\"><div class=\"sk-estimator fitted sk-toggleable\"><input class=\"sk-toggleable__control sk-hidden--visually\" id=\"sk-estimator-id-1\" type=\"checkbox\" checked><label for=\"sk-estimator-id-1\" class=\"sk-toggleable__label fitted sk-toggleable__label-arrow fitted\">&nbsp;&nbsp;MLPClassifier<a class=\"sk-estimator-doc-link fitted\" rel=\"noreferrer\" target=\"_blank\" href=\"https://scikit-learn.org/1.5/modules/generated/sklearn.neural_network.MLPClassifier.html\">?<span>Documentation for MLPClassifier</span></a><span class=\"sk-estimator-doc-link fitted\">i<span>Fitted</span></span></label><div class=\"sk-toggleable__content fitted\"><pre>MLPClassifier(hidden_layer_sizes=(128, 128, 128), max_iter=500,\n",
+-       "              random_state=100, shuffle=False)</pre></div> </div></div></div></div>"
+-      ],
+-      "text/plain": [
+-       "MLPClassifier(hidden_layer_sizes=(128, 128, 128), max_iter=500,\n",
+-       "              random_state=100, shuffle=False)"
+-      ]
+-     },
+-     "execution_count": 21,
+-     "metadata": {},
+-     "output_type": "execute_result"
+-    }
+-   ],
++   "cell_type": "raw",
++   "id": "b3d6141e",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
+    "source": [
+     "%time model.fit(train[cols], train['d'])"
+    ]
+   },
+   {
+    "cell_type": "code",
+-   "execution_count": 22,
+-   "metadata": {},
+-   "outputs": [
+-    {
+-     "data": {
+-      "text/plain": [
+-       "array([1, 1, 1, ..., 0, 0, 1])"
+-      ]
+-     },
+-     "execution_count": 22,
+-     "metadata": {},
+-     "output_type": "execute_result"
+-    }
+-   ],
++   "execution_count": null,
++   "id": "926eeeef",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
++   "outputs": [],
++   "source": [
++    "%time model.fit(train[cols], train['d'], verbose=0)"
++   ]
++  },
++  {
++   "cell_type": "raw",
++   "id": "ba681071",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
+    "source": [
+     "model.predict(test[cols])"
+    ]
+   },
+   {
+    "cell_type": "code",
+-   "execution_count": 23,
+-   "metadata": {},
++   "execution_count": null,
++   "id": "d21dc275",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
++   "source": [
++    "model(tf.convert_to_tensor(test[cols], dtype=tf.float32), training=False).numpy()"
++   ]
++  },
++  {
++   "cell_type": "raw",
++   "id": "ab5431f8",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
+    "source": [
+     "test['p'] = model.predict(test[cols])\n",
+     "test['p'] = np.where(test['p'] > 0, 1, -1)"
+    ]
+   },
++  {
++   "cell_type": "code",
++   "execution_count": null,
++   "id": "444ca7c2",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
++   "outputs": [],
++   "source": [
++    "test['p'] = model(tf.convert_to_tensor(test[cols], dtype=tf.float32), training=False).numpy()\n",
++    "test['p'] = np.where(test['p'] > 0, 1, -1)"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": 24,
+@@ -1658,56 +1261,53 @@
+    ]
+   },
+   {
+-   "cell_type": "code",
+-   "execution_count": 38,
+-   "metadata": {},
+-   "outputs": [
+-    {
+-     "name": "stdout",
+-     "output_type": "stream",
+-     "text": [
+-      "\u001b[1m108/108\u001b[0m \u001b[32m━━━━━━━━━━━━━━━━━━━━\u001b[0m\u001b[37m\u001b[0m \u001b[1m0s\u001b[0m 1ms/step  \n"
+-     ]
+-    },
+-    {
+-     "data": {
+-      "text/plain": [
+-       "array([[0.5888667 ],\n",
+-       "       [0.5608472 ],\n",
+-       "       [0.5436228 ],\n",
+-       "       ...,\n",
+-       "       [0.43069002],\n",
+-       "       [0.41988724],\n",
+-       "       [0.44829527]], dtype=float32)"
+-      ]
+-     },
+-     "execution_count": 38,
+-     "metadata": {},
+-     "output_type": "execute_result"
+-    }
+-   ],
++   "cell_type": "raw",
++   "id": "651b95df",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
+    "source": [
+     "model.predict(test[cols])"
+    ]
+   },
+   {
+    "cell_type": "code",
+-   "execution_count": 39,
+-   "metadata": {},
+-   "outputs": [
+-    {
+-     "name": "stdout",
+-     "output_type": "stream",
+-     "text": [
+-      "\u001b[1m108/108\u001b[0m \u001b[32m━━━━━━━━━━━━━━━━━━━━\u001b[0m\u001b[37m\u001b[0m \u001b[1m0s\u001b[0m 1ms/step\n"
+-     ]
+-    }
+-   ],
++   "execution_count": null,
++   "id": "e97e0f24",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
++   "outputs": [],
++   "source": [
++    "model(tf.convert_to_tensor(test[cols], dtype=tf.float32), training=False).numpy()"
++   ]
++  },
++  {
++   "cell_type": "raw",
++   "id": "db9c3e94",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
+    "source": [
+     "test['p'] = np.where(model.predict(test[cols]) > 0.5, 1, 0)\n",
+     "test['p'] = np.where(test['p'] > 0, 1, -1)"
+    ]
+   },
++  {
++   "cell_type": "code",
++   "execution_count": null,
++   "id": "d64ba4b6",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
++   "outputs": [],
++   "source": [
++    "test['p'] = np.where(model(tf.convert_to_tensor(test[cols], dtype=tf.float32), training=False).numpy() > 0.5, 1, 0)\n",
++    "test['p'] = np.where(test['p'] > 0, 1, -1)"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": 40,
+@@ -2008,23 +1608,30 @@
+    ]
+   },
+   {
+-   "cell_type": "code",
+-   "execution_count": 53,
+-   "metadata": {},
+-   "outputs": [
+-    {
+-     "name": "stdout",
+-     "output_type": "stream",
+-     "text": [
+-      "\u001b[1m108/108\u001b[0m \u001b[32m━━━━━━━━━━━━━━━━━━━━\u001b[0m\u001b[37m\u001b[0m \u001b[1m0s\u001b[0m 1ms/step  \n"
+-     ]
+-    }
+-   ],
++   "cell_type": "raw",
++   "id": "c67b59ef",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
+    "source": [
+     "test['p'] = np.where(model.predict(test[cols]) > 0.5, 1, 0)\n",
+     "test['p'] = np.where(test['p'] > 0, 1, -1)"
+    ]
+   },
++  {
++   "cell_type": "code",
++   "execution_count": null,
++   "id": "77129c6e",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
++   "outputs": [],
++   "source": [
++    "test['p'] = np.where(model(tf.convert_to_tensor(test[cols], dtype=tf.float32), training=False).numpy() > 0.5, 1, 0)\n",
++    "test['p'] = np.where(test['p'] > 0, 1, -1)"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": 54,
+@@ -2325,23 +1932,30 @@
+    ]
+   },
+   {
+-   "cell_type": "code",
+-   "execution_count": 67,
+-   "metadata": {},
+-   "outputs": [
+-    {
+-     "name": "stdout",
+-     "output_type": "stream",
+-     "text": [
+-      "\u001b[1m108/108\u001b[0m \u001b[32m━━━━━━━━━━━━━━━━━━━━\u001b[0m\u001b[37m\u001b[0m \u001b[1m0s\u001b[0m 4ms/step\n"
+-     ]
+-    }
+-   ],
++   "cell_type": "raw",
++   "id": "8923f4e2",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
+    "source": [
+     "test['p'] = np.where(model.predict(test[cols]) > 0.5, 1, 0)\n",
+     "test['p'] = np.where(test['p'] > 0, 1, -1)"
+    ]
+   },
++  {
++   "cell_type": "code",
++   "execution_count": null,
++   "id": "288e0341",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
++   "outputs": [],
++   "source": [
++    "test['p'] = np.where(model(tf.convert_to_tensor(test[cols], dtype=tf.float32), training=False).numpy() > 0.5, 1, 0)\n",
++    "test['p'] = np.where(test['p'] > 0, 1, -1)"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": 68,
+@@ -2685,23 +2299,30 @@
+    ]
+   },
+   {
+-   "cell_type": "code",
+-   "execution_count": 83,
+-   "metadata": {},
+-   "outputs": [
+-    {
+-     "name": "stdout",
+-     "output_type": "stream",
+-     "text": [
+-      "\u001b[1m108/108\u001b[0m \u001b[32m━━━━━━━━━━━━━━━━━━━━\u001b[0m\u001b[37m\u001b[0m \u001b[1m0s\u001b[0m 2ms/step\n"
+-     ]
+-    }
+-   ],
++   "cell_type": "raw",
++   "id": "32908c4e",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
+    "source": [
+     "test['p'] = np.where(model.predict(test[cols]) > 0.5, 1, 0)\n",
+     "test['p'] = np.where(test['p'] > 0, 1, -1)"
+    ]
+   },
++  {
++   "cell_type": "code",
++   "execution_count": null,
++   "id": "a1327740",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
++   "outputs": [],
++   "source": [
++    "test['p'] = np.where(model(tf.convert_to_tensor(test[cols], dtype=tf.float32), training=False).numpy() > 0.5, 1, 0)\n",
++    "test['p'] = np.where(test['p'] > 0, 1, -1)"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": 84,
+@@ -2901,13 +2522,28 @@
+     "model.evaluate(test[cols], test['d'])"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "b703ae90",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "test['p'] = np.where(model.predict(test[cols]) > 0.5, 1, 0)\n",
++    "test['p'] = np.where(test['p'] > 0, 1, -1)"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "f78cf655",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "test['p'] = np.where(model.predict(test[cols]) > 0.5, 1, 0)\n",
++    "test['p'] = np.where(model(tf.convert_to_tensor(test[cols], dtype=tf.float32), training=False).numpy() > 0.5, 1, 0)\n",
+     "test['p'] = np.where(test['p'] > 0, 1, -1)"
+    ]
+   },
+@@ -2966,8 +2602,8 @@
+  ],
+  "metadata": {
+   "kernelspec": {
+-   "name": "python3",
+-   "display_name": "Python 3"
++   "display_name": "Python 3",
++   "name": "python3"
+   },
+   "language_info": {
+    "codemirror_mode": {
+@@ -2984,4 +2620,4 @@
+  },
+  "nbformat": 4,
+  "nbformat_minor": 4
+-}
+\ No newline at end of file
++}
+diff --git a/convolution.ipynb b/convolution.ipynb
+index e66643d..1993dcd 100644
+--- a/convolution.ipynb
++++ b/convolution.ipynb
+@@ -34,8 +34,8 @@
+   },
+   {
+    "cell_type": "code",
+-   "metadata": {},
+    "execution_count": null,
++   "metadata": {},
+    "outputs": [],
+    "source": [
+     "!git clone https://github.com/tpq-classes/ai_in_finance.git\n",
+@@ -451,22 +451,50 @@
+     "ax = res.plot(figsize=(10, 6), style=['--', '--'])"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "1aa2cad5",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "model.predict(g)"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "67f2cf1a",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "model.predict(g)"
++    "model(tf.convert_to_tensor(g, dtype=tf.float32), training=False).numpy()"
++   ]
++  },
++  {
++   "cell_type": "raw",
++   "id": "fb10f489",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "model.predict(g).round()"
+    ]
+   },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "28a86f0d",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "model.predict(g).round()"
++    "model(tf.convert_to_tensor(g, dtype=tf.float32), training=False).numpy().round()"
+    ]
+   },
+   {
+@@ -539,14 +567,32 @@
+     "                             mode='auto')]"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "c309261a",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "%%time\n",
++    "model.fit(np.atleast_3d(train[cols]), train['d'],\n",
++    "          epochs=15, batch_size=48, verbose=False,\n",
++    "          validation_data=(np.atleast_3d(val[cols]), val['d']),\n",
++    "          callbacks=callbacks);"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "ab2a227a",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+     "%%time\n",
+-    "model.fit(np.atleast_3d(train[cols]), train['d'],\n",
++    "model.fit(np.atleast_3d(train[cols], verbose=0), train['d'],\n",
+     "          epochs=15, batch_size=48, verbose=False,\n",
+     "          validation_data=(np.atleast_3d(val[cols]), val['d']),\n",
+     "          callbacks=callbacks);"
+@@ -607,13 +653,28 @@
+     "model.evaluate(np.atleast_3d(test[cols]), test['d'])"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "2759d7ca",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "test['p'] = np.where(model.predict(np.atleast_3d(test[cols])) > 0.5, 1, 0)\n",
++    "test['p'] = np.where(test['p'] > 0, 1, -1)"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "84f02f9c",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "test['p'] = np.where(model.predict(np.atleast_3d(test[cols])) > 0.5, 1, 0)\n",
++    "test['p'] = np.where(model(tf.convert_to_tensor(np.atleast_3d(test[cols], dtype=tf.float32), training=False).numpy()) > 0.5, 1, 0)\n",
+     "test['p'] = np.where(test['p'] > 0, 1, -1)"
+    ]
+   },
+@@ -735,8 +796,8 @@
+  ],
+  "metadata": {
+   "kernelspec": {
+-   "name": "python3",
+-   "display_name": "Python 3"
++   "display_name": "Python 3",
++   "name": "python3"
+   },
+   "language_info": {
+    "codemirror_mode": {
+@@ -753,4 +814,4 @@
+  },
+  "nbformat": 4,
+  "nbformat_minor": 4
+-}
+\ No newline at end of file
++}
+diff --git a/estimation.ipynb b/estimation.ipynb
+index 36e05a6..756989c 100644
+--- a/estimation.ipynb
++++ b/estimation.ipynb
+@@ -41,8 +41,8 @@
+   },
+   {
+    "cell_type": "code",
+-   "metadata": {},
+    "execution_count": null,
++   "metadata": {},
+    "outputs": [],
+    "source": [
+     "!git clone https://github.com/tpq-classes/ai_in_finance.git\n",
+@@ -291,10 +291,12 @@
+    ]
+   },
+   {
+-   "cell_type": "code",
+-   "execution_count": null,
+-   "metadata": {},
+-   "outputs": [],
++   "cell_type": "raw",
++   "id": "e8fa8725",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
+    "source": [
+     "%time model.fit(train[cols], train['rs'])"
+    ]
+@@ -302,8 +304,22 @@
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "8e44b3a4",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
++   "source": [
++    "%time model.fit(train[cols], train['rs'], verbose=0)"
++   ]
++  },
++  {
++   "cell_type": "raw",
++   "id": "ee6951df",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
+    "source": [
+     "model.predict(test[cols])"
+    ]
+@@ -311,13 +327,40 @@
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "e44d60b6",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
++   "source": [
++    "model(tf.convert_to_tensor(test[cols], dtype=tf.float32), training=False).numpy()"
++   ]
++  },
++  {
++   "cell_type": "raw",
++   "id": "a3ddd532",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
+    "source": [
+     "test['p'] = model.predict(test[cols])\n",
+     "test['p'] = np.where(test['p'] > 0, 1, -1)"
+    ]
+   },
++  {
++   "cell_type": "code",
++   "execution_count": null,
++   "id": "2372d372",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
++   "outputs": [],
++   "source": [
++    "test['p'] = model(tf.convert_to_tensor(test[cols], dtype=tf.float32), training=False).numpy()\n",
++    "test['p'] = np.where(test['p'] > 0, 1, -1)"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+@@ -496,22 +539,51 @@
+     "model.evaluate(test[cols], test['r'] * scale)"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "e8ad2b08",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "model.predict(test[cols])"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "adf1b8ac",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "model.predict(test[cols])"
++    "model(tf.convert_to_tensor(test[cols], dtype=tf.float32), training=False).numpy()"
++   ]
++  },
++  {
++   "cell_type": "raw",
++   "id": "f6959be9",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "test['p'] = model.predict(test[cols])\n",
++    "test['p'] = np.where(test['p'] > 0, 1, -1)"
+    ]
+   },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "2455fb9e",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "test['p'] = model.predict(test[cols])\n",
++    "test['p'] = model(tf.convert_to_tensor(test[cols], dtype=tf.float32), training=False).numpy()\n",
+     "test['p'] = np.where(test['p'] > 0, 1, -1)"
+    ]
+   },
+@@ -656,13 +728,28 @@
+     "model.evaluate(test[cols], test['rs'])"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "849ba933",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "test['p'] = model.predict(test[cols])\n",
++    "test['p'] = np.where(test['p'] > 0, 1, -1)"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "1c09f605",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "test['p'] = model.predict(test[cols])\n",
++    "test['p'] = model(tf.convert_to_tensor(test[cols], dtype=tf.float32), training=False).numpy()\n",
+     "test['p'] = np.where(test['p'] > 0, 1, -1)"
+    ]
+   },
+@@ -807,13 +894,28 @@
+     "model.evaluate(test[cols], test['rs'])"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "70268e16",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "test['p'] = model.predict(test[cols])\n",
++    "test['p'] = np.where(test['p'] > 0, 1, -1)"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "9be855cd",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "test['p'] = model.predict(test[cols])\n",
++    "test['p'] = model(tf.convert_to_tensor(test[cols], dtype=tf.float32), training=False).numpy()\n",
+     "test['p'] = np.where(test['p'] > 0, 1, -1)"
+    ]
+   },
+@@ -971,13 +1073,28 @@
+     "model.evaluate(test[cols], test['rs'])"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "bbf964d1",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "test['p'] = model.predict(test[cols])\n",
++    "test['p'] = np.where(test['p'] > 0, 1, -1)"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "4ccbc045",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "test['p'] = model.predict(test[cols])\n",
++    "test['p'] = model(tf.convert_to_tensor(test[cols], dtype=tf.float32), training=False).numpy()\n",
+     "test['p'] = np.where(test['p'] > 0, 1, -1)"
+    ]
+   },
+@@ -1036,8 +1153,8 @@
+  ],
+  "metadata": {
+   "kernelspec": {
+-   "name": "python3",
+-   "display_name": "Python 3"
++   "display_name": "Python 3",
++   "name": "python3"
+   },
+   "language_info": {
+    "codemirror_mode": {
+@@ -1054,4 +1171,4 @@
+  },
+  "nbformat": 4,
+  "nbformat_minor": 4
+-}
+\ No newline at end of file
++}
+diff --git a/features.ipynb b/features.ipynb
+index 4cd6299..4d7752a 100644
+--- a/features.ipynb
++++ b/features.ipynb
+@@ -41,8 +41,8 @@
+   },
+   {
+    "cell_type": "code",
+-   "metadata": {},
+    "execution_count": null,
++   "metadata": {},
+    "outputs": [],
+    "source": [
+     "!git clone https://github.com/tpq-classes/ai_in_finance.git\n",
+@@ -304,22 +304,51 @@
+     "                      verbose=False)"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "0bafc8d8",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "%time model.fit(train[cols], train['r'])"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "b3019535",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "%time model.fit(train[cols], train['r'])"
++    "%time model.fit(train[cols], train['r'], verbose=0)"
++   ]
++  },
++  {
++   "cell_type": "raw",
++   "id": "c2b1e599",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "test['p'] = model.predict(test[cols])\n",
++    "test['p'] = np.where(test['p'] > 0, 1, -1)"
+    ]
+   },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "9f79b849",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "test['p'] = model.predict(test[cols])\n",
++    "test['p'] = model(tf.convert_to_tensor(test[cols], dtype=tf.float32), training=False).numpy()\n",
+     "test['p'] = np.where(test['p'] > 0, 1, -1)"
+    ]
+   },
+@@ -502,13 +531,28 @@
+     "model.evaluate(test[cols], test['r'] * 5000)"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "1e01c79b",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "test['p'] = model.predict(test[cols])\n",
++    "test['p'] = np.where(test['p'] > 0, 1, -1)"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "07274b32",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "test['p'] = model.predict(test[cols])\n",
++    "test['p'] = model(tf.convert_to_tensor(test[cols], dtype=tf.float32), training=False).numpy()\n",
+     "test['p'] = np.where(test['p'] > 0, 1, -1)"
+    ]
+   },
+@@ -597,22 +641,51 @@
+     "                      verbose=False)"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "d74f2cc4",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "%time model.fit(train[cols], train['d'])"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "a697dfb0",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "%time model.fit(train[cols], train['d'])"
++    "%time model.fit(train[cols], train['d'], verbose=0)"
++   ]
++  },
++  {
++   "cell_type": "raw",
++   "id": "df0b0ab9",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "test['p'] = model.predict(test[cols])\n",
++    "test['p'] = np.where(test['p'] > 0, 1, -1)"
+    ]
+   },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "e70fcde4",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "test['p'] = model.predict(test[cols])\n",
++    "test['p'] = model(tf.convert_to_tensor(test[cols], dtype=tf.float32), training=False).numpy()\n",
+     "test['p'] = np.where(test['p'] > 0, 1, -1)"
+    ]
+   },
+@@ -771,13 +844,28 @@
+     "model.evaluate(test[cols], test['d'])"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "e1921e04",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "test['p'] = np.where(model.predict(test[cols]) > 0.5, 1, 0)\n",
++    "test['p'] = np.where(test['p'] > 0, 1, -1)"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "0bf4760c",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "test['p'] = np.where(model.predict(test[cols]) > 0.5, 1, 0)\n",
++    "test['p'] = np.where(model(tf.convert_to_tensor(test[cols], dtype=tf.float32), training=False).numpy() > 0.5, 1, 0)\n",
+     "test['p'] = np.where(test['p'] > 0, 1, -1)"
+    ]
+   },
+@@ -919,22 +1007,51 @@
+     "                      verbose=False)"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "d93f216e",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "%time model.fit(train[csel], train['d'])"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "be9c5ffc",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "%time model.fit(train[csel], train['d'])"
++    "%time model.fit(train[csel], train['d'], verbose=0)"
++   ]
++  },
++  {
++   "cell_type": "raw",
++   "id": "f802ea85",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "test['p'] = model.predict(test[csel])\n",
++    "test['p'] = np.where(test['p'] > 0, 1, -1)"
+    ]
+   },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "4598ef1f",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "test['p'] = model.predict(test[csel])\n",
++    "test['p'] = model(tf.convert_to_tensor(test[csel], dtype=tf.float32), training=False).numpy()\n",
+     "test['p'] = np.where(test['p'] > 0, 1, -1)"
+    ]
+   },
+@@ -1105,13 +1222,28 @@
+     "model.evaluate(test[csel], test['d'])"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "0c43de71",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "test['p'] = np.where(model.predict(test[csel]) > 0.5, 1, 0)\n",
++    "test['p'] = np.where(test['p'] > 0, 1, -1)"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "15aaf42f",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "test['p'] = np.where(model.predict(test[csel]) > 0.5, 1, 0)\n",
++    "test['p'] = np.where(model(tf.convert_to_tensor(test[csel], dtype=tf.float32), training=False).numpy() > 0.5, 1, 0)\n",
+     "test['p'] = np.where(test['p'] > 0, 1, -1)"
+    ]
+   },
+@@ -1185,13 +1317,28 @@
+     "model.evaluate(test[csel], test['d'])"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "29005cfc",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "test['p'] = np.where(model.predict(test[csel]) > 0.5, 1, 0)\n",
++    "test['p'] = np.where(test['p'] > 0, 1, -1)"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "d4b708b4",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "test['p'] = np.where(model.predict(test[csel]) > 0.5, 1, 0)\n",
++    "test['p'] = np.where(model(tf.convert_to_tensor(test[csel], dtype=tf.float32), training=False).numpy() > 0.5, 1, 0)\n",
+     "test['p'] = np.where(test['p'] > 0, 1, -1)"
+    ]
+   },
+@@ -1250,8 +1397,8 @@
+  ],
+  "metadata": {
+   "kernelspec": {
+-   "name": "python3",
+-   "display_name": "Python 3"
++   "display_name": "Python 3",
++   "name": "python3"
+   },
+   "language_info": {
+    "codemirror_mode": {
+@@ -1268,4 +1415,4 @@
+  },
+  "nbformat": 4,
+  "nbformat_minor": 4
+-}
+\ No newline at end of file
++}
+diff --git a/improvements.ipynb b/improvements.ipynb
+index 273da42..d0f4d51 100644
+--- a/improvements.ipynb
++++ b/improvements.ipynb
+@@ -34,8 +34,8 @@
+   },
+   {
+    "cell_type": "code",
+-   "metadata": {},
+    "execution_count": null,
++   "metadata": {},
+    "outputs": [],
+    "source": [
+     "!git clone https://github.com/tpq-classes/ai_in_finance.git\n",
+@@ -169,14 +169,29 @@
+     "print('mse: %.5f' % (scores[1]))"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "2c407e6f",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "# estimation\n",
++    "pred = model.predict(x)"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "07f96b1e",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+     "# estimation\n",
+-    "pred = model.predict(x)"
++    "pred = model(tf.convert_to_tensor(x, dtype=tf.float32), training=False).numpy()"
+    ]
+   },
+   {
+@@ -456,10 +471,12 @@
+    ]
+   },
+   {
+-   "cell_type": "code",
+-   "execution_count": null,
+-   "metadata": {},
+-   "outputs": [],
++   "cell_type": "raw",
++   "id": "6f52ee71",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
+    "source": [
+     "model.fit(l0, y)"
+    ]
+@@ -467,8 +484,22 @@
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "c8a60551",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
++   "source": [
++    "model.fit(l0, y, verbose=0)"
++   ]
++  },
++  {
++   "cell_type": "raw",
++   "id": "40831bd9",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
+    "source": [
+     "model.predict(l0)"
+    ]
+@@ -476,8 +507,22 @@
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "bb173c8f",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
++   "source": [
++    "model(tf.convert_to_tensor(l0, dtype=tf.float32), training=False).numpy()"
++   ]
++  },
++  {
++   "cell_type": "raw",
++   "id": "fb7563f7",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
+    "source": [
+     "model.predict(l0) - y"
+    ]
+@@ -485,14 +530,42 @@
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "d288f2f7",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
++   "source": [
++    "model(tf.convert_to_tensor(l0, dtype=tf.float32), training=False).numpy() - y"
++   ]
++  },
++  {
++   "cell_type": "raw",
++   "id": "497c6b09",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
+    "source": [
+     "res = pd.DataFrame({'y': y.flatten(),\n",
+     "                    'pred': model.predict(l0).flatten()},\n",
+     "                   index=range(len(y)))"
+    ]
+   },
++  {
++   "cell_type": "code",
++   "execution_count": null,
++   "id": "67f5495e",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
++   "outputs": [],
++   "source": [
++    "res = pd.DataFrame({'y': y.flatten(),\n",
++    "                    'pred': model(tf.convert_to_tensor(l0, dtype=tf.float32), training=False).numpy().flatten()},\n",
++    "                   index=range(len(y)))"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+@@ -559,10 +632,12 @@
+    ]
+   },
+   {
+-   "cell_type": "code",
+-   "execution_count": null,
+-   "metadata": {},
+-   "outputs": [],
++   "cell_type": "raw",
++   "id": "34eacd25",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
+    "source": [
+     "model.fit(l0, y, 3000)"
+    ]
+@@ -570,8 +645,22 @@
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "ec683681",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
++   "source": [
++    "model.fit(l0, y, 3000, verbose=0)"
++   ]
++  },
++  {
++   "cell_type": "raw",
++   "id": "f9752546",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
+    "source": [
+     "model.predict(l0)"
+    ]
+@@ -579,12 +668,38 @@
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "ff2d722d",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
++   "source": [
++    "model(tf.convert_to_tensor(l0, dtype=tf.float32), training=False).numpy()"
++   ]
++  },
++  {
++   "cell_type": "raw",
++   "id": "3877549f",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
+    "source": [
+     "model.predict(l0).round() == y"
+    ]
+   },
++  {
++   "cell_type": "code",
++   "execution_count": null,
++   "id": "9063bfda",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
++   "outputs": [],
++   "source": [
++    "model(tf.convert_to_tensor(l0, dtype=tf.float32), training=False).numpy().round() == y"
++   ]
++  },
+   {
+    "cell_type": "markdown",
+    "metadata": {},
+@@ -648,13 +763,27 @@
+     "model = snn(a=0.05, act='sigmoid')"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "0aab6946",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "model.fit(l0, y, 1000)"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "7a11c4a9",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "model.fit(l0, y, 1000)"
++    "model.fit(l0, y, 1000, verbose=0)"
+    ]
+   },
+   {
+@@ -791,13 +920,27 @@
+     "model = onn(a=0.001, act='softplus')"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "5b614651",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "%time model.fit(l0, y, 5000)"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "9b9243ac",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "%time model.fit(l0, y, 5000)"
++    "%time model.fit(l0, y, 5000, verbose=0)"
+    ]
+   },
+   {
+@@ -818,14 +961,30 @@
+     "model.res['mse'].iloc[40:].plot(figsize=(10, 6));"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "f3286ddb",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "res = pd.DataFrame({'y': y.flatten(),\n",
++    "                    'pred': model.predict(l0).flatten()},\n",
++    "                   index=range(len(y)))"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "39aabd2e",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+     "res = pd.DataFrame({'y': y.flatten(),\n",
+-    "                    'pred': model.predict(l0).flatten()},\n",
++    "                    'pred': model(tf.convert_to_tensor(l0, dtype=tf.float32), training=False).numpy().flatten()},\n",
+     "                   index=range(len(y)))"
+    ]
+   },
+@@ -872,13 +1031,27 @@
+     "y.round()"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "16926c21",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "model.fit(l0.round(), y.round())"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "3ba2dcb4",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "model.fit(l0.round(), y.round())"
++    "model.fit(l0.round(, verbose=0), y.round())"
+    ]
+   },
+   {
+@@ -905,10 +1078,99 @@
+     "### Class"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "9ff9c943",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "class oonn:\n",
++    "    def __init__(self, units=12, act='linear', a=0.01, momentum=0.1,\n",
++    "                 steps=100, verbose=False, psteps=200, seed=None):\n",
++    "        self.units = units\n",
++    "        self.act= act\n",
++    "        self.a = a\n",
++    "        self.momentum = momentum\n",
++    "        self.steps = steps\n",
++    "        self.verbose = verbose\n",
++    "        self.psteps = psteps\n",
++    "        self.seed = seed\n",
++    "    def initialize(self):\n",
++    "        if self.seed is not None:\n",
++    "            np.random.seed(self.seed)\n",
++    "        samples, features = self.l0.shape\n",
++    "        self.w0 = np.random.random((features, self.units))\n",
++    "        self.w1 = np.random.random((self.units, 1))\n",
++    "        self.v1 = 0.\n",
++    "        self.v2 = 0.\n",
++    "        self.max_acc = 0.\n",
++    "        self.min_mse = 1000.\n",
++    "        self.best_w0 = self.w0.copy()\n",
++    "        self.best_w1 = self.w1.copy()\n",
++    "    def forward(self):\n",
++    "        self.l1 = activation(np.dot(self.l0, self.w0), self.act)\n",
++    "        self.l2 = activation(np.dot(self.l1, self.w1), self.act)\n",
++    "        self.e = self.l2 - self.y\n",
++    "    def backward(self):\n",
++    "        self.e = self.l2 - self.y\n",
++    "        d2 = self.e * activation(self.l2, self.act, True)\n",
++    "        v2 = self.v2 * self.momentum + self.a * np.dot(self.l1.T, d2)\n",
++    "        self.w1 = self.w1 + self.momentum * v2 - self.a * np.dot(self.l1.T, d2)\n",
++    "        self.v2 = v2\n",
++    "        e1 = np.dot(d2, self.w1.T)\n",
++    "        d1 = e1 * activation(self.l1, self.act, True)\n",
++    "        v1 = self.v1 * self.momentum + self.a * np.dot(self.l0.T, d1)\n",
++    "        self.w0 = self.w0 + self.momentum * v1 - self.a * np.dot(self.l0.T, d1)\n",
++    "        self.v1 = v1\n",
++    "    def metrics(self, s):\n",
++    "        mse = (self.e ** 2).mean()\n",
++    "        acc = float(sum(self.l2.round() == self.y)[0] / len(self.y))\n",
++    "        if acc > self.max_acc and self.target == 'acc':\n",
++    "            self.max_acc = acc\n",
++    "            self.best_w0 = self.w0.copy()\n",
++    "            self.best_w1 = self.w1.copy()\n",
++    "        elif mse < self.min_mse and self.target == 'mse':\n",
++    "            self.min_mse = mse\n",
++    "            self.best_w0 = self.w0.copy()\n",
++    "            self.best_w1 = self.w1.copy()\n",
++    "        opt = float(sum(self.predict(self.l0).round()[0] == self.y)[0] / len(self.y))\n",
++    "        self.res = pd.concat((self.res,\n",
++    "            pd.DataFrame({'mse': mse, 'acc': acc, 'opt': opt}, index=[s,]))\n",
++    "        )\n",
++    "        if s % self.psteps == 0 and self.verbose:\n",
++    "                print(f'step={s:5d} | mse={mse:.5f}')\n",
++    "                print(f'           | acc={acc:.5f}')\n",
++    "                print(f'           | opt={opt:.5f}')\n",
++    "    def fit(self, l0, y, target='acc', steps=None):\n",
++    "        self.target = target\n",
++    "        self.l0 = l0\n",
++    "        self.y = y\n",
++    "        if steps is None:\n",
++    "            steps = self.steps\n",
++    "        self.res = pd.DataFrame()\n",
++    "        self.initialize()\n",
++    "        self.forward()\n",
++    "        for s in range(1, steps + 1):\n",
++    "            self.backward()\n",
++    "            self.forward()\n",
++    "            self.metrics(s)\n",
++    "    def predict(self, X):\n",
++    "        l1 = activation(np.dot(X, self.best_w0), self.act)\n",
++    "        l2 = activation(np.dot(l1, self.best_w1), self.act)\n",
++    "        return l2\n",
++    "    def plot_metrics(self, ms=5, lw=2.0):\n",
++    "        model.res.plot(figsize=(10, 6), style=['o', 'o', '--'], ms=ms, lw=lw)"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "f1cc7ef8",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+     "class oonn:\n",
+@@ -960,7 +1222,7 @@
+     "            self.min_mse = mse\n",
+     "            self.best_w0 = self.w0.copy()\n",
+     "            self.best_w1 = self.w1.copy()\n",
+-    "        opt = float(sum(self.predict(self.l0).round()[0] == self.y)[0] / len(self.y))\n",
++    "        opt = float(sum(self(tf.convert_to_tensor(self.l0, dtype=tf.float32), training=False).numpy().round()[0] == self.y)[0] / len(self.y))\n",
+     "        self.res = pd.concat((self.res,\n",
+     "            pd.DataFrame({'mse': mse, 'acc': acc, 'opt': opt}, index=[s,]))\n",
+     "        )\n",
+@@ -1037,13 +1299,27 @@
+     "            verbose=True, psteps=200)"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "8c96d251",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "%time model.fit(l0, y, target='mse')"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "045cb858",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "%time model.fit(l0, y, target='mse')"
++    "%time model.fit(l0, y, target='mse', verbose=0)"
+    ]
+   },
+   {
+@@ -1064,14 +1340,30 @@
+     "model.plot_metrics(7, 2)"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "848c3270",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "res = pd.DataFrame({'y': y.flatten(),\n",
++    "                    'pred': model.predict(l0).flatten()},\n",
++    "                   index=range(len(y)))"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "ec6514cd",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+     "res = pd.DataFrame({'y': y.flatten(),\n",
+-    "                    'pred': model.predict(l0).flatten()},\n",
++    "                    'pred': model(tf.convert_to_tensor(l0, dtype=tf.float32), training=False).numpy().flatten()},\n",
+     "                   index=range(len(y)))"
+    ]
+   },
+@@ -1135,13 +1427,27 @@
+     "           verbose=True, psteps=1000)"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "a9a205bd",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "model.fit(l0, y, 4000)"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "5d0b7a9c",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "model.fit(l0, y, 4000)"
++    "model.fit(l0, y, 4000, verbose=0)"
+    ]
+   },
+   {
+@@ -1170,15 +1476,28 @@
+     "             verbose=True, psteps=1000, seed=100)"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "b1f650ac",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup",
++    "scrolled": true
++   },
++   "source": [
++    "model.fit(l0, y, target='acc', steps=4000)"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
++   "id": "d34aaa56",
+    "metadata": {
+-    "scrolled": true
++    "auto_refactor_role": "generated"
+    },
+    "outputs": [],
+    "source": [
+-    "model.fit(l0, y, target='acc', steps=4000)"
++    "model.fit(l0, y, target='acc', steps=4000, verbose=0)"
+    ]
+   },
+   {
+@@ -1295,13 +1614,27 @@
+     "y = data['d'].values.reshape(-1, 1)"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "8ce1ed7b",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "%time model.fit(data[cols].values, y, target='acc', steps=500)"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "1f66a719",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "%time model.fit(data[cols].values, y, target='acc', steps=500)"
++    "%time model.fit(data[cols].values, y, target='acc', steps=500, verbose=0)"
+    ]
+   },
+   {
+@@ -1336,10 +1669,71 @@
+     "### Class"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "9f72f903",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "class bonn(oonn):\n",
++    "    def forward(self):\n",
++    "        self.l1 = activation(np.dot(self.l0, self.w0), self.act)\n",
++    "        self.l2 = activation(np.dot(self.l1, self.w1), self.act)\n",
++    "        self.l1_ = activation(np.dot(self.l0_, self.w0), self.act)\n",
++    "        self.l2_ = activation(np.dot(self.l1_, self.w1), self.act)\n",
++    "    def metrics(self, s):\n",
++    "        self.e = self.l2_ - self.y_\n",
++    "        mse = (self.e ** 2).mean()\n",
++    "        acc = float(sum(self.l2_.round() == self.y_)[0] / len(self.y_))\n",
++    "        if acc > self.max_acc and self.target == 'acc':\n",
++    "            self.max_acc = acc\n",
++    "            self.best_w0 = self.w0.copy()\n",
++    "            self.best_w1 = self.w1.copy()\n",
++    "        elif mse < self.min_mse and self.target == 'mse':\n",
++    "            self.min_mse = mse\n",
++    "            self.best_w0 = self.w0.copy()\n",
++    "            self.best_w1 = self.w1.copy()\n",
++    "        opt = float(sum(self.predict(self.l0_).round() == self.y_)[0] / len(self.y_))\n",
++    "        self.res = pd.concat((self.res,\n",
++    "            pd.DataFrame({'mse': mse, 'acc': acc, 'opt': opt}, index=[s,]))\n",
++    "        )\n",
++    "        if s % self.psteps == 0 and self.verbose:\n",
++    "                print(f'step={s:5d} | mse={mse:.5f}')\n",
++    "                print(f'           | acc={acc:.5f}')\n",
++    "                print(f'           | opt={opt:.5f}')\n",
++    "    def fit(self, l0, y, target='acc', batch_size=32, steps=None):\n",
++    "        self.target = target\n",
++    "        self.l0_ = l0\n",
++    "        self.y_ = y\n",
++    "        if steps is None:\n",
++    "            steps = self.steps\n",
++    "        self.res = pd.DataFrame()\n",
++    "        n = int(len(y) / batch_size)\n",
++    "        i = 0\n",
++    "        self.min_mse = 0\n",
++    "        for b in range(n):\n",
++    "            self.l0 = self.l0_[b:b + batch_size]\n",
++    "            self.y = self.y_[b:b + batch_size]\n",
++    "            if b == 0:\n",
++    "                self.initialize()\n",
++    "            self.forward()\n",
++    "            for s in range(steps):\n",
++    "                i += 1\n",
++    "                self.backward()\n",
++    "                self.forward()\n",
++    "                if i % 5 == 0:\n",
++    "                    self.metrics(i)"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "585116a9",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+     "class bonn(oonn):\n",
+@@ -1360,7 +1754,7 @@
+     "            self.min_mse = mse\n",
+     "            self.best_w0 = self.w0.copy()\n",
+     "            self.best_w1 = self.w1.copy()\n",
+-    "        opt = float(sum(self.predict(self.l0_).round() == self.y_)[0] / len(self.y_))\n",
++    "        opt = float(sum(self(tf.convert_to_tensor(self.l0_, dtype=tf.float32), training=False).numpy().round() == self.y_)[0] / len(self.y_))\n",
+     "        self.res = pd.concat((self.res,\n",
+     "            pd.DataFrame({'mse': mse, 'acc': acc, 'opt': opt}, index=[s,]))\n",
+     "        )\n",
+@@ -1419,15 +1813,31 @@
+     "len(y)"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "2feeb350",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "%%time\n",
++    "model.fit(data[cols].values, y, target='acc',\n",
++    "                batch_size=32, steps=200)"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "822b8ab8",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+     "%%time\n",
+     "model.fit(data[cols].values, y, target='acc',\n",
+-    "                batch_size=32, steps=200)"
++    "                batch_size=32, steps=200, verbose=0)"
+    ]
+   },
+   {
+@@ -1553,13 +1963,27 @@
+     "             act='sigmoid', verbose=True, psteps=500, seed=100)"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "e2ac65a7",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "%time model.fit(l0, y, target='acc', steps=2000)"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "886049bd",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "%time model.fit(l0, y, target='acc', steps=2000)"
++    "%time model.fit(l0, y, target='acc', steps=2000, verbose=0)"
+    ]
+   },
+   {
+@@ -1647,13 +2071,27 @@
+     "y[:5]"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "5f400e30",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "%time model.fit(l0, y, target='acc', steps=1000)"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "fd6c406b",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "%time model.fit(l0, y, target='acc', steps=1000)"
++    "%time model.fit(l0, y, target='acc', steps=1000, verbose=0)"
+    ]
+   },
+   {
+@@ -1681,10 +2119,64 @@
+     "## Validation"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "06f4e58b",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "class vonn(oonn):\n",
++    "    def metrics(self, s):\n",
++    "        mse = (self.e ** 2).mean()\n",
++    "        acc = float(sum(self.l2.round() == self.y)[0] / len(self.y))\n",
++    "        if acc > self.max_acc and self.target == 'acc':\n",
++    "            self.max_acc = acc\n",
++    "            self.best_w0 = self.w0.copy()\n",
++    "            self.best_w1 = self.w1.copy()\n",
++    "        elif mse < self.min_mse and self.target == 'mse':\n",
++    "            self.min_mse = mse\n",
++    "            self.best_w0 = self.w0.copy()\n",
++    "            self.best_w1 = self.w1.copy()\n",
++    "        opt = float(sum(self.predict(self.l0).round() == self.y)[0] / len(self.y))\n",
++    "        val = float(sum(self.predict(self.vl0).round() == self.vy)[0] / len(self.vy))\n",
++    "        self.res = pd.concat((self.res,\n",
++    "            pd.DataFrame({'mse': mse, 'acc': acc, 'opt': opt, 'val': val}, index=[s,]))\n",
++    "        )\n",
++    "        if s % self.psteps == 0 and self.verbose:\n",
++    "                print(f'step={s:5d} | mse={mse:.5f}')\n",
++    "                print(f'           | acc={acc:.5f}')\n",
++    "                print(f'           | opt={opt:.5f}')\n",
++    "                print(f'           | val={val:.5f}')\n",
++    "    def fit(self, l0, y, val=0.2, target='acc', steps=None):\n",
++    "        split = int(len(y) * (1 - val))\n",
++    "        self.l0 = l0[:split]\n",
++    "        self.y = y[:split]\n",
++    "        self.vl0 = l0[split:]\n",
++    "        self.vy = y[split:]\n",
++    "        self.target = target\n",
++    "        if steps is None:\n",
++    "            steps = self.steps\n",
++    "        self.res = pd.DataFrame()\n",
++    "        self.initialize()\n",
++    "        self.min_mse = 100.\n",
++    "        self.forward()\n",
++    "        for s in range(1, steps + 1):\n",
++    "            self.backward()\n",
++    "            self.forward()\n",
++    "            self.metrics(s)\n",
++    "    def plot_metrics(self, ms=5, lw=2.0):\n",
++    "        model.res.plot(figsize=(10, 6), style=['o', 'o', '--', 'o'], ms=ms, lw=lw)"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "b4be2381",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+     "class vonn(oonn):\n",
+@@ -1699,8 +2191,8 @@
+     "            self.min_mse = mse\n",
+     "            self.best_w0 = self.w0.copy()\n",
+     "            self.best_w1 = self.w1.copy()\n",
+-    "        opt = float(sum(self.predict(self.l0).round() == self.y)[0] / len(self.y))\n",
+-    "        val = float(sum(self.predict(self.vl0).round() == self.vy)[0] / len(self.vy))\n",
++    "        opt = float(sum(self(tf.convert_to_tensor(self.l0, dtype=tf.float32), training=False).numpy().round() == self.y)[0] / len(self.y))\n",
++    "        val = float(sum(self(tf.convert_to_tensor(self.vl0, dtype=tf.float32), training=False).numpy().round() == self.vy)[0] / len(self.vy))\n",
+     "        self.res = pd.concat((self.res,\n",
+     "            pd.DataFrame({'mse': mse, 'acc': acc, 'opt': opt, 'val': val}, index=[s,]))\n",
+     "        )\n",
+@@ -1749,13 +2241,27 @@
+     "l0 = normalize(data[cols].values)"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "bbcebae0",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "%time model.fit(l0, y, target='acc', val=0.20, steps=800)"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "61f02760",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "%time model.fit(l0, y, target='acc', val=0.20, steps=800)"
++    "%time model.fit(l0, y, target='acc', val=0.20, steps=800, verbose=0)"
+    ]
+   },
+   {
+@@ -1871,13 +2377,27 @@
+     "y = train['d'].values.reshape(-1, 1)"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "05570239",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "%time model.fit(l0, y, target='acc', steps=1000, val=0.20)"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "9e32da09",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "%time model.fit(l0, y, target='acc', steps=1000, val=0.20)"
++    "%time model.fit(l0, y, target='acc', steps=1000, val=0.20, verbose=0)"
+    ]
+   },
+   {
+@@ -1924,13 +2444,27 @@
+     "y_ = test['d'].values.reshape(-1, 1)"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "5834cc7e",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "test['pred'] = model.predict(l0_).round()"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "c50bd62a",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "test['pred'] = model.predict(l0_).round()"
++    "test['pred'] = model(tf.convert_to_tensor(l0_, dtype=tf.float32), training=False).numpy().round()"
+    ]
+   },
+   {
+@@ -2065,13 +2599,27 @@
+     "             act='sigmoid', verbose=True, psteps=2000, seed=1)"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "a8885711",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "%time model.fit(x_, y_, target='mse')"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "c2a34ff2",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "%time model.fit(x_, y_, target='mse')"
++    "%time model.fit(x_, y_, target='mse', verbose=0)"
+    ]
+   },
+   {
+@@ -2092,13 +2640,27 @@
+     "model.min_mse"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "21154a39",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "pred = model.predict(x_)"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "5f53bac6",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "pred = model.predict(x_)"
++    "pred = model(tf.convert_to_tensor(x_, dtype=tf.float32), training=False).numpy()"
+    ]
+   },
+   {
+@@ -2123,8 +2685,8 @@
+  ],
+  "metadata": {
+   "kernelspec": {
+-   "name": "python3",
+-   "display_name": "Python 3"
++   "display_name": "Python 3",
++   "name": "python3"
+   },
+   "language_info": {
+    "codemirror_mode": {
+@@ -2141,4 +2703,4 @@
+  },
+  "nbformat": 4,
+  "nbformat_minor": 4
+-}
+\ No newline at end of file
++}
+diff --git a/learning.ipynb b/learning.ipynb
+index f47ee71..1ebd44b 100644
+--- a/learning.ipynb
++++ b/learning.ipynb
+@@ -34,8 +34,8 @@
+   },
+   {
+    "cell_type": "code",
+-   "metadata": {},
+    "execution_count": null,
++   "metadata": {},
+    "outputs": [],
+    "source": [
+     "!git clone https://github.com/tpq-classes/ai_in_finance.git\n",
+@@ -1559,22 +1559,50 @@
+     "model = MLPClassifier(hidden_layer_sizes=(2 * units), max_iter=250)"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "14416c4b",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "model.fit(l0, y)"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "353b9aed",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "model.fit(l0, y)"
++    "model.fit(l0, y, verbose=0)"
++   ]
++  },
++  {
++   "cell_type": "raw",
++   "id": "70b00385",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "l2 = model.predict(l0)"
+    ]
+   },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "923560f4",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "l2 = model.predict(l0)"
++    "l2 = model(tf.convert_to_tensor(l0, dtype=tf.float32), training=False).numpy()"
+    ]
+   },
+   {
+@@ -1726,14 +1754,29 @@
+     "print('mse: %.5f' % (scores[1]))"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "a2360bb9",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "# estimation\n",
++    "pred = model.predict(x)"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "9f28fbc6",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+     "# estimation\n",
+-    "pred = model.predict(x)"
++    "pred = model(tf.convert_to_tensor(x, dtype=tf.float32), training=False).numpy()"
+    ]
+   },
+   {
+@@ -1834,14 +1877,29 @@
+     "print('accuracy: %.2f%%' % (scores[1] * 100))"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "502786de",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "# classification\n",
++    "pred = np.where(model.predict(x) > 0.5, 1, 0)"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "411ee951",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+     "# classification\n",
+-    "pred = np.where(model.predict(x) > 0.5, 1, 0)"
++    "pred = np.where(model(tf.convert_to_tensor(x, dtype=tf.float32), training=False).numpy() > 0.5, 1, 0)"
+    ]
+   },
+   {
+@@ -1866,8 +1924,8 @@
+  ],
+  "metadata": {
+   "kernelspec": {
+-   "name": "python3",
+-   "display_name": "Python 3"
++   "display_name": "Python 3",
++   "name": "python3"
+   },
+   "language_info": {
+    "codemirror_mode": {
+@@ -1884,4 +1942,4 @@
+  },
+  "nbformat": 4,
+  "nbformat_minor": 4
+-}
+\ No newline at end of file
++}
+diff --git a/mlpdnn.ipynb b/mlpdnn.ipynb
+index 2bbf0f2..c1d1128 100644
+--- a/mlpdnn.ipynb
++++ b/mlpdnn.ipynb
+@@ -34,8 +34,8 @@
+   },
+   {
+    "cell_type": "code",
+-   "metadata": {},
+    "execution_count": null,
++   "metadata": {},
+    "outputs": [],
+    "source": [
+     "!git clone https://github.com/tpq-classes/ai_in_finance.git\n",
+@@ -141,22 +141,50 @@
+     "                     validation_fraction=0.1)"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "9452bec7",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "%time model.fit(x.reshape(-1, 1), y)"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "1eb49d5a",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "%time model.fit(x.reshape(-1, 1), y)"
++    "%time model.fit(x.reshape(-1, 1, verbose=0), y)"
++   ]
++  },
++  {
++   "cell_type": "raw",
++   "id": "f2bf0341",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "pred = model.predict(x.reshape(-1, 1))"
+    ]
+   },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "5e1e3aa9",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "pred = model.predict(x.reshape(-1, 1))"
++    "pred = model(tf.convert_to_tensor(x.reshape(-1, 1, dtype=tf.float32), training=False).numpy())"
+    ]
+   },
+   {
+@@ -282,13 +310,27 @@
+     "print('mse: %.5f' % (scores[1]))"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "dc4a0a1f",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "pred = model.predict(x)"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "9224a26d",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "pred = model.predict(x)"
++    "pred = model(tf.convert_to_tensor(x, dtype=tf.float32), training=False).numpy()"
+    ]
+   },
+   {
+@@ -440,10 +482,12 @@
+    ]
+   },
+   {
+-   "cell_type": "code",
+-   "execution_count": null,
+-   "metadata": {},
+-   "outputs": [],
++   "cell_type": "raw",
++   "id": "e7a6f097",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
+    "source": [
+     "model.fit(l0, y)"
+    ]
+@@ -451,8 +495,22 @@
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "a7f9dd86",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
++   "source": [
++    "model.fit(l0, y, verbose=0)"
++   ]
++  },
++  {
++   "cell_type": "raw",
++   "id": "f7b8cb34",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
+    "source": [
+     "mean_squared_error(model.predict(l0), y)"
+    ]
+@@ -460,13 +518,40 @@
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "58b25a2c",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
++   "source": [
++    "mean_squared_error(model(tf.convert_to_tensor(l0, dtype=tf.float32), training=False).numpy(), y)"
++   ]
++  },
++  {
++   "cell_type": "raw",
++   "id": "bfc8c590",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
+    "source": [
+     "res = pd.DataFrame({'y': y, 'pred': model.predict(l0)},\n",
+     "                   index=range(len(y)))"
+    ]
+   },
++  {
++   "cell_type": "code",
++   "execution_count": null,
++   "id": "78f067ef",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
++   "outputs": [],
++   "source": [
++    "res = pd.DataFrame({'y': y, 'pred': model(tf.convert_to_tensor(l0, dtype=tf.float32), training=False).numpy()},\n",
++    "                   index=range(len(y)))"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+@@ -512,22 +597,51 @@
+     "%time model.fit(l0, y, epochs=1000, verbose=False)"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "2b51c533",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "mean_squared_error(model.predict(l0), y)"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "501cba37",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "mean_squared_error(model.predict(l0), y)"
++    "mean_squared_error(model(tf.convert_to_tensor(l0, dtype=tf.float32), training=False).numpy(), y)"
++   ]
++  },
++  {
++   "cell_type": "raw",
++   "id": "fc22e836",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "res = pd.DataFrame({'y': y, 'pred': model.predict(l0).flatten()},\n",
++    "                   index=range(len(y)))"
+    ]
+   },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "776c7325",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "res = pd.DataFrame({'y': y, 'pred': model.predict(l0).flatten()},\n",
++    "res = pd.DataFrame({'y': y, 'pred': model(tf.convert_to_tensor(l0, dtype=tf.float32), training=False).numpy().flatten()},\n",
+     "                   index=range(len(y)))"
+    ]
+   },
+@@ -648,10 +762,12 @@
+    ]
+   },
+   {
+-   "cell_type": "code",
+-   "execution_count": null,
+-   "metadata": {},
+-   "outputs": [],
++   "cell_type": "raw",
++   "id": "a4c8f853",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
+    "source": [
+     "model.fit(l0, y)"
+    ]
+@@ -659,8 +775,22 @@
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "320c4f1f",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
++   "source": [
++    "model.fit(l0, y, verbose=0)"
++   ]
++  },
++  {
++   "cell_type": "raw",
++   "id": "718341aa",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
+    "source": [
+     "model.predict(l0)"
+    ]
+@@ -668,12 +798,38 @@
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "88d62a93",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
++   "source": [
++    "model(tf.convert_to_tensor(l0, dtype=tf.float32), training=False).numpy()"
++   ]
++  },
++  {
++   "cell_type": "raw",
++   "id": "2af97b5f",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
+    "source": [
+     "model.predict(l0).round() == y"
+    ]
+   },
++  {
++   "cell_type": "code",
++   "execution_count": null,
++   "id": "0155f865",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
++   "outputs": [],
++   "source": [
++    "model(tf.convert_to_tensor(l0, dtype=tf.float32), training=False).numpy().round() == y"
++   ]
++  },
+   {
+    "cell_type": "markdown",
+    "metadata": {},
+@@ -710,13 +866,27 @@
+     "%time model.fit(l0, y, epochs=1000, verbose=False)"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "5fb2d70d",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "model.predict(l0).flatten().round() == y "
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "5e39871b",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "model.predict(l0).flatten().round() == y "
++    "model(tf.convert_to_tensor(l0, dtype=tf.float32), training=False).numpy().flatten().round() == y "
+    ]
+   },
+   {
+@@ -832,22 +1002,50 @@
+     "y = train['d']"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "d3723622",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "%time model.fit(l0, y)"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "3909ba36",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "%time model.fit(l0, y)"
++    "%time model.fit(l0, y, verbose=0)"
++   ]
++  },
++  {
++   "cell_type": "raw",
++   "id": "54943ae6",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "accuracy_score(model.predict(l0), train['d'])"
+    ]
+   },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "f1b33119",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "accuracy_score(model.predict(l0), train['d'])"
++    "accuracy_score(model(tf.convert_to_tensor(l0, dtype=tf.float32), training=False).numpy(), train['d'])"
+    ]
+   },
+   {
+@@ -867,13 +1065,27 @@
+     "y_ = test['d']"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "ed7e349b",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "test['pred'] = model.predict(l0_).round()"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "d21315f4",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "test['pred'] = model.predict(l0_).round()"
++    "test['pred'] = model(tf.convert_to_tensor(l0_, dtype=tf.float32), training=False).numpy().round()"
+    ]
+   },
+   {
+@@ -1012,13 +1224,27 @@
+     "               validation_split=0.25, shuffle=False)"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "ac2e3111",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "accuracy_score(model.predict(l0).round(), train['d'])"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "9e3878d5",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "accuracy_score(model.predict(l0).round(), train['d'])"
++    "accuracy_score(model(tf.convert_to_tensor(l0, dtype=tf.float32), training=False).numpy().round(), train['d'])"
+    ]
+   },
+   {
+@@ -1068,13 +1294,27 @@
+     "y_ = test['d']"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "2c71e7bf",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "test['pred'] = model.predict(l0_).round()"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "dd76eed4",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "test['pred'] = model.predict(l0_).round()"
++    "test['pred'] = model(tf.convert_to_tensor(l0_, dtype=tf.float32), training=False).numpy().round()"
+    ]
+   },
+   {
+@@ -1152,8 +1392,8 @@
+  ],
+  "metadata": {
+   "kernelspec": {
+-   "name": "python3",
+-   "display_name": "Python 3"
++   "display_name": "Python 3",
++   "name": "python3"
+   },
+   "language_info": {
+    "codemirror_mode": {
+@@ -1170,4 +1410,4 @@
+  },
+  "nbformat": 4,
+  "nbformat_minor": 4
+-}
+\ No newline at end of file
++}
+diff --git a/recurrent.ipynb b/recurrent.ipynb
+index e4f2a6a..4f1978d 100644
+--- a/recurrent.ipynb
++++ b/recurrent.ipynb
+@@ -34,8 +34,8 @@
+   },
+   {
+    "cell_type": "code",
+-   "metadata": {},
+    "execution_count": null,
++   "metadata": {},
+    "outputs": [],
+    "source": [
+     "!git clone https://github.com/tpq-classes/ai_in_finance.git\n",
+@@ -1316,14 +1316,35 @@
+     "                             mode='auto')]"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "43a4aab0",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "%%time\n",
++    "model.fit(train[cols[::-1]].values.reshape(len(train),lags, -1),\n",
++    "          train['r'].values.reshape(len(train), -1),\n",
++    "          epochs=25, batch_size=32, verbose=False,\n",
++    "          validation_data=(\n",
++    "              val[cols[::-1]].values.reshape(len(val),lags,-1),\n",
++    "              val['r'].values.reshape(len(val), -1)\n",
++    "          ), callbacks=callbacks);"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "1efa99ae",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+     "%%time\n",
+-    "model.fit(train[cols[::-1]].values.reshape(len(train),lags, -1),\n",
++    "model.fit(train[cols[::-1]].values.reshape(len(train, verbose=0),lags, -1),\n",
+     "          train['r'].values.reshape(len(train), -1),\n",
+     "          epochs=25, batch_size=32, verbose=False,\n",
+     "          validation_data=(\n",
+@@ -1380,13 +1401,27 @@
+     "               test['r'])"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "39e20ef3",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "test['p'] = model.predict(test[cols].values.reshape(len(test), lags, -1))"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "e8cd76a9",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "test['p'] = model.predict(test[cols].values.reshape(len(test), lags, -1))"
++    "test['p'] = model(tf.convert_to_tensor(test[cols].values.reshape(len(test, dtype=tf.float32), training=False).numpy(), lags, -1))"
+    ]
+   },
+   {
+@@ -1444,8 +1479,8 @@
+  ],
+  "metadata": {
+   "kernelspec": {
+-   "name": "python3",
+-   "display_name": "Python 3"
++   "display_name": "Python 3",
++   "name": "python3"
+   },
+   "language_info": {
+    "codemirror_mode": {
+@@ -1462,4 +1497,4 @@
+  },
+  "nbformat": 4,
+  "nbformat_minor": 4
+-}
+\ No newline at end of file
++}
+diff --git a/regression.ipynb b/regression.ipynb
+index 65ea7e0..72a23fd 100644
+--- a/regression.ipynb
++++ b/regression.ipynb
+@@ -34,8 +34,8 @@
+   },
+   {
+    "cell_type": "code",
+-   "metadata": {},
+    "execution_count": null,
++   "metadata": {},
+    "outputs": [],
+    "source": [
+     "!git clone https://github.com/tpq-classes/ai_in_finance.git\n",
+@@ -613,22 +613,51 @@
+     "model = LinearRegression()"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "61509daa",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "model.fit(np.atleast_2d(x).T, y)"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "2e4adc80",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "model.fit(np.atleast_2d(x).T, y)"
++    "model.fit(np.atleast_2d(x, verbose=0).T, y)"
++   ]
++  },
++  {
++   "cell_type": "raw",
++   "id": "be835869",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "pred = model.predict(np.atleast_2d(x).T)\n",
++    "pred[:5]"
+    ]
+   },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "77de5779",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "pred = model.predict(np.atleast_2d(x).T)\n",
++    "pred = model(tf.convert_to_tensor(np.atleast_2d(x, dtype=tf.float32), training=False).numpy().T)\n",
+     "pred[:5]"
+    ]
+   },
+@@ -713,17 +742,35 @@
+     "x_ = np.atleast_2d(np.linspace(x.min(), x.max(), 50)).T"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "60678876",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "res = {}\n",
++    "for deg in [1, 3, 5]:\n",
++    "    model = PolynomialRegression(deg)\n",
++    "    model.fit(x, y)\n",
++    "    res[deg] = model.predict(x_)"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "ca345963",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+     "res = {}\n",
+     "for deg in [1, 3, 5]:\n",
+     "    model = PolynomialRegression(deg)\n",
+-    "    model.fit(x, y)\n",
+-    "    res[deg] = model.predict(x_)"
++    "    model.fit(x, y, verbose=0)\n",
++    "    res[deg] = model(tf.convert_to_tensor(x_, dtype=tf.float32), training=False).numpy()"
+    ]
+   },
+   {
+@@ -783,22 +830,50 @@
+     "model = PolynomialRegression(2)"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "d8a1cbd8",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "model.fit(x[:split], y[:split])"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "21096be4",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "model.fit(x[:split], y[:split])"
++    "model.fit(x[:split], y[:split], verbose=0)"
++   ]
++  },
++  {
++   "cell_type": "raw",
++   "id": "96caf8a8",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "pred = model.predict(x)"
+    ]
+   },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "29653da7",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "pred = model.predict(x)"
++    "pred = model(tf.convert_to_tensor(x, dtype=tf.float32), training=False).numpy()"
+    ]
+   },
+   {
+@@ -830,22 +905,50 @@
+     "np.random.shuffle(i)"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "b8515442",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "model.fit(x[i[:split]], y[i[:split]])"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "06429d7e",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "model.fit(x[i[:split]], y[i[:split]])"
++    "model.fit(x[i[:split]], y[i[:split]], verbose=0)"
++   ]
++  },
++  {
++   "cell_type": "raw",
++   "id": "ba53f147",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "pred = model.predict(x)"
+    ]
+   },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "5dec2fe4",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "pred = model.predict(x)"
++    "pred = model(tf.convert_to_tensor(x, dtype=tf.float32), training=False).numpy()"
+    ]
+   },
+   {
+@@ -1450,22 +1553,50 @@
+     "### Model Fitting & Prediction"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "230b3b21",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "model = model.fit(rets[cols], rets['d'])"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "850f949b",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "model = model.fit(rets[cols], rets['d'])"
++    "model = model.fit(rets[cols], rets['d'], verbose=0)"
++   ]
++  },
++  {
++   "cell_type": "raw",
++   "id": "de269de3",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "rets['p'] = model.predict(rets[cols])"
+    ]
+   },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "92a55a26",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "rets['p'] = model.predict(rets[cols])"
++    "rets['p'] = model(tf.convert_to_tensor(rets[cols], dtype=tf.float32), training=False).numpy()"
+    ]
+   },
+   {
+@@ -1521,8 +1652,8 @@
+  ],
+  "metadata": {
+   "kernelspec": {
+-   "name": "python3",
+-   "display_name": "Python 3"
++   "display_name": "Python 3",
++   "name": "python3"
+   },
+   "language_info": {
+    "codemirror_mode": {
+@@ -1539,4 +1670,4 @@
+  },
+  "nbformat": 4,
+  "nbformat_minor": 4
+-}
+\ No newline at end of file
++}
+diff --git a/tsfresh.ipynb b/tsfresh.ipynb
+index ed1f05f..df4cebf 100644
+--- a/tsfresh.ipynb
++++ b/tsfresh.ipynb
+@@ -34,8 +34,8 @@
+   },
+   {
+    "cell_type": "code",
+-   "metadata": {},
+    "execution_count": null,
++   "metadata": {},
+    "outputs": [],
+    "source": [
+     "!git clone https://github.com/tpq-classes/ai_in_finance.git\n",
+@@ -582,22 +582,50 @@
+     "                       shuffle=False)"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "d979bb8b",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "%time model.fit(train[c], train['d'])"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "435b57f2",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "%time model.fit(train[c], train['d'])"
++    "%time model.fit(train[c], train['d'], verbose=0)"
++   ]
++  },
++  {
++   "cell_type": "raw",
++   "id": "465dbca1",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "pred = model.predict(test[c])"
+    ]
+   },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "1fa9b93a",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "pred = model.predict(test[c])"
++    "pred = model(tf.convert_to_tensor(test[c], dtype=tf.float32), training=False).numpy()"
+    ]
+   },
+   {
+@@ -609,13 +637,28 @@
+     "accuracy_score(test['d'], pred)"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "40a62038",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "test['p'] = model.predict(test[c])\n",
++    "test['p'] = np.where(test['p'] > 0, 1, -1)"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "9d1c989c",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "test['p'] = model.predict(test[c])\n",
++    "test['p'] = model(tf.convert_to_tensor(test[c], dtype=tf.float32), training=False).numpy()\n",
+     "test['p'] = np.where(test['p'] > 0, 1, -1)"
+    ]
+   },
+@@ -821,22 +864,51 @@
+     "model.evaluate(test[c], test['d'])"
+    ]
+   },
++  {
++   "cell_type": "raw",
++   "id": "21827a08",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "model.predict(test[c])[:6]"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "b7f3fd7c",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "model.predict(test[c])[:6]"
++    "model(tf.convert_to_tensor(test[c], dtype=tf.float32), training=False).numpy()[:6]"
++   ]
++  },
++  {
++   "cell_type": "raw",
++   "id": "368c3eed",
++   "metadata": {
++    "auto_refactor_original_cell_type": "code",
++    "auto_refactor_role": "raw_backup"
++   },
++   "source": [
++    "test['p'] = model.predict(test[c])\n",
++    "test['p'] = np.where(test['p'] > 0.5, 1, -1)"
+    ]
+   },
+   {
+    "cell_type": "code",
+    "execution_count": null,
+-   "metadata": {},
++   "id": "5822f750",
++   "metadata": {
++    "auto_refactor_role": "generated"
++   },
+    "outputs": [],
+    "source": [
+-    "test['p'] = model.predict(test[c])\n",
++    "test['p'] = model(tf.convert_to_tensor(test[c], dtype=tf.float32), training=False).numpy()\n",
+     "test['p'] = np.where(test['p'] > 0.5, 1, -1)"
+    ]
+   },
+@@ -896,8 +968,8 @@
+  "metadata": {
+   "anaconda-cloud": {},
+   "kernelspec": {
+-   "name": "python3",
+-   "display_name": "Python 3"
++   "display_name": "Python 3",
++   "name": "python3"
+   },
+   "language_info": {
+    "codemirror_mode": {
+@@ -914,4 +986,4 @@
+  },
+  "nbformat": 4,
+  "nbformat_minor": 4
+-}
+\ No newline at end of file
++}
